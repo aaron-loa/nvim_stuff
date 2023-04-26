@@ -4,7 +4,7 @@
   --   end
 return {
 	errex_order = function()
-		table_data = {}
+		local table_data = {}
 		table_data["content"] = 1
 		table_data["position"] = 2
 		table_data["inset"] = 3
@@ -244,7 +244,7 @@ return {
 	end,
 
 	default_order = function()
-		table_data = {}
+		local table_data = {}
 		table_data["all"] = 0
 		table_data["appearance"] = 1
 		table_data["box-sizing"] = 2
@@ -504,7 +504,7 @@ return {
 	end,
 
 	dunamenti = function()
-	  table_data = {}
+	  local table_data = {}
       table_data["position"] = 0
       table_data["z-index"] = 1
       table_data["top"] = 2
@@ -910,7 +910,7 @@ return {
     end,
 
 	adler = function()
-	  table_data = {}
+	  local table_data = {}
       table_data["clear"] = 1
       table_data["overflow"] = 2
       table_data["position"] = 3

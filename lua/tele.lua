@@ -6,6 +6,6 @@ vim.keymap.set('n', '<leader>cs', ":lua require('telescope.builtin').colorscheme
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 vim.keymap.set('n', '<leader>fm', ":lua require('telescope').extensions.media_files.media_files()<CR>", {})
-vim.keymap.set('n', '<leader>ps', function()
+vim.keymap.set('n', '<leader>fs', function()
 	builtin.grep_string({ search = vim.fn.input("Grep > ") })
 end)
