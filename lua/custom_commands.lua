@@ -96,7 +96,7 @@ local paths = function(opts)
 	opts = opts or {}
 	pickers
 		.new(opts, {
-			prompt_title = "colors",
+			prompt_title = "project",
 			finder = finders.new_table({
 				results = { unpack(data, 4, #data) },
 			}),
