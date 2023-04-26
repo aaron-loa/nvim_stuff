@@ -121,11 +121,12 @@ require("neoclip").setup({ enable_persistent_history = true, default_register = 
 require("gitsigns").setup()
 require("lualine").setup()
 require("auto-save").setup()
-require'treesitter-context'.setup()
+require("treesitter-context").setup()
 
 require("telescope").load_extension("projects")
 require("telescope").load_extension("neoclip")
 require("telescope").load_extension("macroscope")
+require('telescope').load_extension('aerial')
 require("telescope").setup({
 	pickers = {
 		colorscheme = {

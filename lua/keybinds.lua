@@ -16,7 +16,7 @@ vim.keymap.set("n", "zz", "zz zH")
 vim.keymap.set("n", "<S-Tab>", ":bp<CR>", { silent = true })
 vim.keymap.set("n", ">", ">>", { silent = true })
 vim.keymap.set("n", "<", "<<", { silent = true })
-vim.keymap.set("n", "<F3>", ":AerialToggle <CR>")
+vim.keymap.set("n", "<F3>", ":Telescope aerial <CR>")
 
 vim.keymap.set("n", "<C-W> <C-S>", ":vsplit <CR>")
 vim.keymap.set("v", "<c-j>", ":m '>+1<CR>gv=gv")
