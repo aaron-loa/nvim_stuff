@@ -6,7 +6,7 @@ if vim.g.vscode == nil then
 			enable = true,
 			disable = function(lang, bufnr) -- Disable in large C++ buffers
 				-- return lang == "cpp" and vim.api.nvim_buf_line_count(bufnr) > 50000
-				return vim.api.nvim_buf_line_count(bufnr) > 50000
+				return vim.api.nvim_buf_line_count(bufnr) > 10000 or vim.api.nvim_buf_line_count(bufnr) == 1
 				-- return vim.fn.winwidth(bufnr) > 100000
 			end,
 		},

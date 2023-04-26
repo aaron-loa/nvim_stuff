@@ -82,15 +82,6 @@ vim.api.nvim_create_user_command("SortDeclarations", function()
 	end
 end, {})
 
-local function split(str, sep)
-	local result = {}
-	local regex = ("([^%s]+)"):format(sep)
-	for each in str:gmatch(regex) do
-		table.insert(result, each)
-	end
-	return result
-end
-
 local data = vim.api.nvim_command_output(":!pv_list")
 data = vim.split(data, "\n")
 
@@ -107,15 +98,18 @@ local paths = function(opts)
 		.new(opts, {
 			prompt_title = "colors",
 			finder = finders.new_table({
-				results = { unpack(data , 4, #data ) },
+				results = { unpack(data, 4, #data) },
 			}),
 			sorter = conf.generic_sorter(opts),
 			attach_mappings = function(prompt_bufnr, map)
 				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
-	        local bufnr = vim.api.nvim_get_current_buf()
+					local bufnr = vim.api.nvim_get_current_buf()
 					local selection = action_state.get_selected_entry()
-					vim.api.nvim_exec(string.format(":terminal nohup alacritty --command nvim %s >> /dev/null", selection[1]), true)
+					vim.api.nvim_exec(
+						string.format(":terminal nohup alacritty --working-directory %s --command nvim >> /dev/null", selection[1]),
+						true
+					)
 					vim.api.nvim_set_current_buf(bufnr)
 				end)
 				return true

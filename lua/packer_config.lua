@@ -115,6 +115,17 @@ require("packer").startup(function()
 		end,
 	})
 	use({ "michaelb/sniprun", run = "bash ./install.sh" })
+	use({
+		"folke/trouble.nvim", -- <leader>tt
+		requires = "nvim-tree/nvim-web-devicons",
+		config = function()
+			require("trouble").setup({
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			})
+		end,
+	})
 end)
 
 require("neoclip").setup({ enable_persistent_history = true, default_register = "+" })
@@ -126,11 +137,20 @@ require("treesitter-context").setup()
 require("telescope").load_extension("projects")
 require("telescope").load_extension("neoclip")
 require("telescope").load_extension("macroscope")
-require('telescope').load_extension('aerial')
+require("telescope").load_extension("aerial")
+
+local trouble = require("trouble.providers.telescope")
+
 require("telescope").setup({
 	pickers = {
 		colorscheme = {
 			enable_preview = true,
+		},
+	},
+	defaults = {
+		mappings = {
+			i = { ["<c-t>"] = trouble.open_with_trouble },
+			n = { ["<c-t>"] = trouble.open_with_trouble },
 		},
 	},
 })
