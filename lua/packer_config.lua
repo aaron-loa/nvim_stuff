@@ -17,6 +17,7 @@ require("packer").startup(function()
     run = "make install_jsregexp"
   })
   use "rafamadriz/friendly-snippets"
+  use_rocks 'luafilesystem'
   use("ThePrimeagen/harpoon")
   use("ThePrimeagen/vim-be-good") --trash game
   use("ethanholz/nvim-lastplace") -- good stuff
