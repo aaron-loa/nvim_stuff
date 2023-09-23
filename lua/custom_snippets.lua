@@ -17,14 +17,14 @@ function find_last_occurrence(str, char)
   return last_index
 end
 
---- [TODO:description]
+--- walk_back directories
 ---@param path string
 local function walk_back(path)
   local last_index = find_last_occurrence(path, "/")
   return path:sub(0, last_index - 1)
 end
 
---- desc
+--- unused but very cool
 ---@param path string
 local function parse_yml(path)
   local created_buffer = vim.api.nvim_create_buf(true, true)

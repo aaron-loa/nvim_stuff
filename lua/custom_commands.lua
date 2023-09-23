@@ -34,12 +34,15 @@ vim.api.nvim_create_user_command("Annotate", function()
       },
       500)
     local lsp_response_formatted = "cant_find_type"
-    if lsp_response ~= nil and
-        lsp_response[3].result ~= nil and
-        lsp_response[3].result.contents ~= nil and
-        lsp_response[3].result.contents.value ~= nil then
-      lsp_response_formatted = "\\"..vim.split(lsp_response[3].result.contents.value, "\n")[1]
-    else
+    if lsp_response ~= nil then
+      for i, x in pairs(lsp_response) do
+        if x.result ~= nil and
+            x.result.contents ~= nil and
+            x.result.contents.value ~= nil then
+          lsp_response_formatted = "\\" .. vim.split(x.result.contents.value, "\n")[1]
+        else
+        end
+      end
     end
     if first_node ~= nil then
       local text = vim.treesitter.get_node_text(first_node, 0)
