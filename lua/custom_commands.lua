@@ -33,26 +33,6 @@ vim.api.nvim_create_user_command("Annotate", function()
         position = { line = coord[1] - 1, character = coord[2] }
       },
       500)
-    -- { {}, {}, {
-    --     result = {
-    --       contents = {
-    --         kind = "php",
-    --         value = "Drupal\\valasztasok_import\\Controller\\Valasztasok
-    -- UpdaterHelper\n\n/home/ron/egm/egm1/ma7.sk/docroot/modules/custom/va
-    -- lasztasok_import/src/Controller/ValasztasokUpdaterHelper.php\n\n"
-    --       },
-    --       range = {
-    --         ["end"] = {
-    --           character = 0,
-    --           line = 0
-    --         },
-    --         start = {
-    --           character = 0,
-    --           line = 0
-    --         }
-    --       }
-    --     }
-    --   } }
     local lsp_response_formatted = "cant_find_type"
     if lsp_response ~= nil and
         lsp_response[3].result ~= nil and
