@@ -4,9 +4,9 @@ require("nvim-tree").setup({
 	open_on_setup = true,
 	reload_on_bufenter = true,
 	respect_buf_cwd = false,
-  sync_root_with_cwd = false,
+	sync_root_with_cwd = false,
 	view = {
-		adaptive_size = false,
+		adaptive_size = true,
 		mappings = {
 			list = {
 				{ key = "-", action = "dir_up" },
@@ -18,13 +18,32 @@ require("nvim-tree").setup({
 				{ key = "d", action = "trash" },
 				{ key = "D", action = "remove" },
 				{ key = "v", action = "toggle_mark" },
+				{ key = "U", action = "refresh" },
+				{ key = "f", action = "" },
+				{ key = "F", action = "live_filter" },
 			},
 		},
 	},
 	renderer = {
-		group_empty = true,
+		group_empty = false,
 	},
 	filters = {
 		dotfiles = true,
+	},
+	diagnostics = {
+		enable = true,
+		show_on_dirs = true,
+		show_on_open_dirs = true,
+		debounce_delay = 500,
+		severity = {
+			min = vim.diagnostic.severity.HINT,
+			max = vim.diagnostic.severity.ERROR,
+		},
+		icons = {
+			hint = "",
+			info = "",
+			warning = "",
+			error = "",
+		},
 	},
 })
