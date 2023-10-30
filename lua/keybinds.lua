@@ -29,7 +29,8 @@ vim.keymap.set("n", "x", [[v"_d]])               -- remove single character and 
 vim.keymap.set("n", "zz", "zz zH")               -- center cursor
 vim.keymap.set("n", "ZZ", ":qa!<CR>")            -- center cursor
 
-vim.keymap.set("v", "<F12>", ":SnipRun <CR>")    -- run selection
+vim.keymap.set("n", "md", "`")            -- reasonable marks
+
 vim.keymap.set("v", "<c-j>", ":m '>+1<CR>gv=gv") -- move selection one line up
 vim.keymap.set("v", "<c-k>", ":m '<-2<CR>gv=gv") -- down
 vim.keymap.set("v", "J", "j")                    -- can hold shift while in v mode
@@ -40,3 +41,14 @@ vim.keymap.set("n","<F9>", ":DapToggleBreakpoint<CR>")
 
 vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.keymap.set("x", "<leader>p", [["_dP]])
+local ls = require("luasnip")
+vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-H>", function() ls.jump(-1) end, {silent = true})
+
+vim.keymap.set("i" , "<C-j>", function()
+	if ls.choice_active() then
+		ls.change_choice(1)
+	end
+end, {silent = true})
+

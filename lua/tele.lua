@@ -22,8 +22,9 @@ local function find_directory_and_focus()
 end
 local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
 
+
 vim.keymap.set("n", "fd", find_directory_and_focus)
-vim.keymap.set('n', '<leader>fc', live_grep_args_shortcuts.grep_word_under_cursor, {})
+vim.keymap.set('n', '<leader>fv', live_grep_args_shortcuts.grep_word_under_cursor, {})
 vim.keymap.set('v', '<leader>fv', live_grep_args_shortcuts.grep_visual_selection, {})
 vim.keymap.set('n', '<leader>fl', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", {})
 vim.keymap.set('n', '<leader>fL', [[:lua require('telescope').extensions.live_grep_args.live_grep_args({default_text='--no-ignore '})<CR>]], {})
@@ -32,8 +33,8 @@ vim.keymap.set('n', '<leader>fF', ":Telescope find_files no_ignore=true<CR>", {}
 vim.keymap.set('n', '<leader>cs', ":lua require('telescope.builtin').colorscheme({enable_preview = true})<CR>", {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-vim.keymap.set('n', '<leader>fm', ":lua require('telescope').extensions.media_files.media_files()<CR>", {})
 vim.keymap.set('n', '<leader>fe', find_directory_and_focus, {})
+vim.keymap.set('n', '<leader>ft', ":Telescope tasks<CR>", {})
 vim.keymap.set('n', '<leader>fs', function()
 	builtin.grep_string({ search = vim.fn.input("Grep > ") })
 end)

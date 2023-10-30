@@ -9,51 +9,57 @@ vim.api.nvim_create_user_command("NeoformatExtra", function()
 end, {})
 
 
+vim.api.nvim_create_user_command("Reset", function()
+  vim.cmd([[source ~/.config/nvim/lua/custom_snippets.lua]])
+end, {})
 
 vim.api.nvim_create_user_command("Annotate", function()
   local current_node = vim.treesitter.get_node()
   local bufnr = vim.api.nvim_get_current_buf()
-  if current_node ~= nil then
-    local current_line = vim.api.nvim_get_current_line()
-    local coord = vim.api.nvim_win_get_cursor(0)
-    local first_character_pos = 0
+  if current_node == nil then
+    return
+  end
 
-    for c in current_line:gmatch "." do
-      if c == " " then
-        first_character_pos = first_character_pos + 1
-      else
-        break
-      end
-    end
+  local current_line = vim.api.nvim_get_current_line()
+  local coord = vim.api.nvim_win_get_cursor(0)
+  local first_character_pos = 0
 
-    local first_node = vim.treesitter.get_node({ bufnr = 0, pos = { coord[1] - 1, first_character_pos + 1 } })
-
-    local lsp_response = vim.lsp.buf_request_sync(0, "textDocument/hover", {
-        textDocument = vim.lsp.util.make_text_document_params(),
-        position = { line = coord[1] - 1, character = coord[2] }
-      },
-      500)
-    local lsp_response_formatted = "cant_find_type"
-    if lsp_response ~= nil then
-      for i, x in pairs(lsp_response) do
-        if x.result ~= nil and
-            x.result.contents ~= nil and
-            x.result.contents.value ~= nil then
-          lsp_response_formatted = "\\" .. vim.split(x.result.contents.value, "\n")[1]
-        else
-        end
-      end
-    end
-    if first_node ~= nil then
-      local text = vim.treesitter.get_node_text(first_node, 0)
-      vim.api.nvim_buf_set_lines(bufnr, coord[1] - 1, coord[1] - 0, false,
-        { string.rep(" ", first_character_pos) .. "/** @var " .. lsp_response_formatted .. " $" .. text .. " **/",
-          current_line })
+  for c in current_line:gmatch "." do
+    if c == " " then
+      first_character_pos = first_character_pos + 1
     else
-      vim.api.nvim_buf_set_lines(bufnr, coord[1] - 1, coord[1] - 0, false,
-        { string.rep(" ", first_character_pos) .. "/** @var " .. lsp_response_formatted .. " cant_find_value **/",
-          current_line })
+      break
     end
+  end
+
+  local first_node = vim.treesitter.get_node({ bufnr = 0, pos = { coord[1] - 1, first_character_pos + 1 } })
+  local lsp_response = vim.lsp.buf_request_sync(0, "textDocument/hover", {
+      textDocument = vim.lsp.util.make_text_document_params(),
+      position = { line = coord[1] - 1, character = coord[2] }
+    },
+    500)
+  local lsp_response_formatted = "cant_find_type"
+  if lsp_response == nil then
+    return
+  end
+  for i, x in pairs(lsp_response) do
+    if x.result ~= nil and
+        x.result.contents ~= nil and
+        x.result.contents.value ~= nil then
+      lsp_response_formatted = "\\" .. vim.split(x.result.contents.value, "\n")[1]
+    else
+    end
+  end
+
+  if first_node ~= nil then
+    local text = vim.treesitter.get_node_text(first_node, 0)
+    vim.api.nvim_buf_set_lines(bufnr, coord[1] - 1, coord[1] - 0, false,
+      { string.rep(" ", first_character_pos) .. "/** @var " .. lsp_response_formatted .. " $" .. text .. " **/",
+        current_line })
+  else
+    vim.api.nvim_buf_set_lines(bufnr, coord[1] - 1, coord[1] - 0, false,
+      { string.rep(" ", first_character_pos) .. "/** @var " .. lsp_response_formatted .. " cant_find_value **/",
+        current_line })
   end
 end, {})
 

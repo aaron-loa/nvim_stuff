@@ -1,13 +1,15 @@
 local ls = require("luasnip")
 local snip = ls.snippet
 local node = ls.snippet_node
-local text = ls.text_node
+local t = ls.text_node
 local insert = ls.insert_node
 local func = ls.function_node
 local choice = ls.choice_node
-local dynamicn = ls.dynamic_node
+local dynamic = ls.dynamic_node
+local i = ls.insert_node
+local fmt = require("luasnip.extras.fmt").fmt
 
-function find_last_occurrence(str, char)
+local function find_last_occurrence(str, char)
   local last_index = nil
   for i = 1, #str do
     if str:sub(i, i) == char then
@@ -66,8 +68,7 @@ local function get_current_module_name()
           break
         end
         if type == "file" then
-          local find = name:find("info.yml")
-          if find then
+          if name:find("info.yml") then
             path_of_info_yml = name
             break
           end
@@ -94,5 +95,23 @@ ls.add_snippets(nil, {
         func(get_current_module_name, {}),
       }
     )
+  },
+})
+ls.add_snippets(nil, {
+  all = {
+    snip("dru_log",
+      fmt([[\Drupal::logger('{}')->{}({})]],
+        { func(get_current_module_name, {}), choice(1, { t("info"), t("warn") }), i(2) })
+    -- \Drupal::logger('migrate_ma7')->info($node->id() . ' tartalomban a beágyazott videó lecserélve médiára.');
+    )
   }
 })
+-- ls.config.set_config( {
+--
+--   history = true,
+--   updateevents = "TextChanges,TextChangedI",
+--   enable_autosnippets = true,
+-- })
+-- function ()
+--
+-- end

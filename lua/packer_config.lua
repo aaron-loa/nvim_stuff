@@ -7,7 +7,6 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 end
 require("packer").startup(function()
   use "mhartington/formatter.nvim"
-  use("EdenEast/nightfox.nvim")
   use "mfussenegger/nvim-lint"
   use({
     "L3MON4D3/LuaSnip",
@@ -17,17 +16,10 @@ require("packer").startup(function()
     run = "make install_jsregexp"
   })
   use "rafamadriz/friendly-snippets"
-  use_rocks 'luafilesystem'
   use("ThePrimeagen/harpoon")
-  use("ThePrimeagen/vim-be-good") --trash game
   use("ethanholz/nvim-lastplace") -- good stuff
-  use("felipec/vim-sanegx")       -- fixes gx
   use "rebelot/kanagawa.nvim"
-  use "jacoborus/tender.vim"
-  use { 'dasupradyumna/midnight.nvim' }
-  use "bluz71/vim-moonfly-colors"
   use("folke/tokyonight.nvim")
-  use("gaborvecsei/memento.nvim")
   use("hrsh7th/cmp-buffer")                  -- Completion source
   use("hrsh7th/cmp-nvim-lsp")                -- Completion source
   use("hrsh7th/nvim-cmp")                    -- Autocomplete engine
@@ -42,18 +34,14 @@ require("packer").startup(function()
   use("nvim-treesitter/nvim-treesitter-context")
   use("nvim-treesitter/playground")
   use("saadparwaiz1/cmp_luasnip") -- Completion source
-  use("sainnhe/sonokai")          --colorscheme
-  use("tomasiser/vim-code-dark")  --colorscheme
   use("tomtom/tcomment_vim")
   use("tpope/vim-surround")
   use("wbthomason/packer.nvim")
-  use({ "catppuccin/nvim", as = "catppuccin" }) --colorscheme
   use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
-  use "IMOKURI/line-number-interval.nvim"
   use({
     "lewis6991/gitsigns.nvim",
-    tag = "release", -- To use the latest release (do not use this if you run Neovim nightly or dev builds!)
   })
+  use "chentoast/marks.nvim"
   use({
     "nvim-lualine/lualine.nvim",
     requires = { "kyazdani42/nvim-web-devicons", opt = false },
@@ -89,45 +77,38 @@ require("packer").startup(function()
     },
   })
   use({
-    "ahmedkhalf/project.nvim",
-    config = function()
-      require("project_nvim").setup({
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      })
-    end,
-  })
-  use({
     "nvim-tree/nvim-tree.lua",
     requires = {
       "nvim-tree/nvim-web-devicons", -- optional, for file icons
     },
     tag = "nightly",                 -- optional, updated every week. (see issue #1193)
   })
-  use({                              -- :AerialOpen
-    "stevearc/aerial.nvim",
-    config = function()
-      require("aerial").setup()
-    end,
-  })
+  -- use({                              -- :AerialOpen
+  --   "stevearc/aerial.nvim",
+  --   config = function()
+  --     require("aerial").setup()
+  --   end,
+  -- })
   use({ -- preview definition
     "rmagatti/goto-preview",
     config = function()
-      require("goto-preview").setup()
+      require("goto-preview").setup({
+        width = 50,
+        height = 30,
+      })
     end,
   })
   use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } }
-  use({ -- clipboard manager
-    "AckslD/nvim-neoclip.lua",
-    requires = {
-      { "kkharji/sqlite.lua" },
-      { "nvim-telescope/telescope.nvim" },
-    },
-    config = function()
-      require("neoclip").setup()
-    end,
-  })
+  -- use({ -- clipboard manager
+  --   "AckslD/nvim-neoclip.lua",
+  --   requires = {
+  --     { "kkharji/sqlite.lua" },
+  --     { "nvim-telescope/telescope.nvim" },
+  --   },
+  --   config = function()
+  --     require("neoclip").setup()
+  --   end,
+  -- })
   -- use({
   --   "Pocco81/auto-save.nvim",
   --   config = function()
@@ -146,15 +127,14 @@ require("packer").startup(function()
     -- Uncomment next line if you want to follow only stable versions
     -- tag = "*"
   })
-  use({ "michaelb/sniprun", run = "bash ./install.sh" })
-  use({
-    "folke/zen-mode.nvim",
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    },
-  })
+  -- use({
+  --   "folke/zen-mode.nvim",
+  --   opts = {
+  --     -- your configuration comes here
+  --     -- or leave it empty to use the default settings
+  --     -- refer to the configuration section below
+  --   },
+  -- })
   use({
     "folke/trouble.nvim", -- <leader>tt
     requires = "nvim-tree/nvim-web-devicons",
@@ -168,17 +148,15 @@ require("packer").startup(function()
   })
 end)
 
-require("neoclip").setup({ enable_persistent_history = true, default_register = "+" })
+-- require("neoclip").setup({ enable_persistent_history = true, default_register = "+" })
 require("gitsigns").setup()
-require("lualine").setup()
--- require("auto-save").setup()
+require("lualine").setup({})
 require("treesitter-context").setup()
-
-require("telescope").load_extension("projects")
+require('dapui').setup()
 require("telescope").load_extension("live_grep_args")
-require("telescope").load_extension("neoclip")
-require("telescope").load_extension("macroscope")
-require("telescope").load_extension("aerial")
+-- require("telescope").load_extension("neoclip")
+-- require("telescope").load_extension("macroscope")
+-- require("telescope").load_extension("aerial")
 require'lsp_signature'.setup()
 local trouble = require("trouble.providers.telescope")
 local lga_actions = require("telescope-live-grep-args.actions")
@@ -210,7 +188,6 @@ require("telescope").setup({
 require("colorizer").setup()
 require("nvim-lastplace").setup({})
 require("goto-preview").setup({ default_mappings = true })
-require("sniprun").setup({ display = { "TempFloatingWindow" } })
 
 require("nvim-treesitter.configs").setup({
   highlight = {
@@ -226,6 +203,15 @@ require("nvim-treesitter.configs").setup({
   },
 })
 
+require'marks'.setup {
+  mappings = {
+    set_next = "m,",
+    next = "m]",
+    preview = "m:",
+    set_bookmark0 = "m0",
+    prev = false -- pass false to disable only this default mapping
+  }
+}
 
 require("formatter").setup {
   -- Use the special "*" filetype for defining formatter configurations on
