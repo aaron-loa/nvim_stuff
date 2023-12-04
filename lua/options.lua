@@ -33,4 +33,4 @@ vim.opt.colorcolumn = "80"
 
 vim.opt.spelllang = "hu"
 vim.opt.autoread = true
-
+vim.g.copilot_no_tab_map = true

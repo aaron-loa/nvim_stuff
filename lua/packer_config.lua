@@ -28,7 +28,7 @@ require("packer").startup(function()
   use("lukas-reineke/indent-blankline.nvim") --blank lines
   use("mbbill/undotree")                     --<F5>
   use {
-    "ray-x/lsp_signature.nvim", -- automatic hover on function
+    "ray-x/lsp_signature.nvim",              -- automatic hover on function
   }
   use("norcalli/nvim-colorizer.lua")
   use("nvim-treesitter/nvim-treesitter-context")
@@ -48,11 +48,12 @@ require("packer").startup(function()
   })
   use({
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.0",
+    tag = "0.1.4",
     -- or                            , branch = '0.1.x',
     requires = { { "nvim-lua/plenary.nvim" } },
   })
   use "nvim-telescope/telescope-live-grep-args.nvim"
+  use "github/copilot.vim"
   use({
     "VonHeikemen/lsp-zero.nvim",
     branch = "v2.x",
@@ -83,41 +84,45 @@ require("packer").startup(function()
     },
     tag = "nightly",                 -- optional, updated every week. (see issue #1193)
   })
-  -- use({                              -- :AerialOpen
-  --   "stevearc/aerial.nvim",
-  --   config = function()
-  --     require("aerial").setup()
-  --   end,
-  -- })
+  use({                              -- :AerialOpen
+    "stevearc/aerial.nvim",
+    config = function()
+      require("aerial").setup(
+        {
+          backends = { "treesitter", "lsp", "markdown", "man" },
+        })
+    end,
+  })
   use({ -- preview definition
     "rmagatti/goto-preview",
     config = function()
       require("goto-preview").setup({
-        width = 50,
-        height = 30,
+        width = 120,
+        height = 90,
+        default_mappings = true,
       })
     end,
   })
   use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } }
-  -- use({ -- clipboard manager
-  --   "AckslD/nvim-neoclip.lua",
-  --   requires = {
-  --     { "kkharji/sqlite.lua" },
-  --     { "nvim-telescope/telescope.nvim" },
-  --   },
-  --   config = function()
-  --     require("neoclip").setup()
-  --   end,
-  -- })
-  -- use({
-  --   "Pocco81/auto-save.nvim",
-  --   config = function()
-  --     require("auto-save").setup
-  --       {
-  --         trigger_events = {},
-  --       }
-  --   end,
-  -- })
+  use({ -- clipboard manager
+    "AckslD/nvim-neoclip.lua",
+    requires = {
+      { "kkharji/sqlite.lua" },
+      { "nvim-telescope/telescope.nvim" },
+    },
+    config = function()
+      require("neoclip").setup()
+    end,
+  })
+  use({
+    "Pocco81/auto-save.nvim",
+    config = function()
+      require("auto-save").setup
+      {
+        trigger_events = {},
+      }
+    end,
+  })
   use({
     "danymat/neogen",
     config = function()
@@ -148,16 +153,16 @@ require("packer").startup(function()
   })
 end)
 
--- require("neoclip").setup({ enable_persistent_history = true, default_register = "+" })
+require("neoclip").setup({ enable_persistent_history = true, default_register = "+" })
 require("gitsigns").setup()
 require("lualine").setup({})
 require("treesitter-context").setup()
 require('dapui').setup()
 require("telescope").load_extension("live_grep_args")
--- require("telescope").load_extension("neoclip")
+require("telescope").load_extension("neoclip")
 -- require("telescope").load_extension("macroscope")
--- require("telescope").load_extension("aerial")
-require'lsp_signature'.setup()
+require("telescope").load_extension("aerial")
+require 'lsp_signature'.setup()
 local trouble = require("trouble.providers.telescope")
 local lga_actions = require("telescope-live-grep-args.actions")
 
@@ -187,7 +192,6 @@ require("telescope").setup({
 
 require("colorizer").setup()
 require("nvim-lastplace").setup({})
-require("goto-preview").setup({ default_mappings = true })
 
 require("nvim-treesitter.configs").setup({
   highlight = {
@@ -203,7 +207,7 @@ require("nvim-treesitter.configs").setup({
   },
 })
 
-require'marks'.setup {
+require 'marks'.setup {
   mappings = {
     set_next = "m,",
     next = "m]",
@@ -213,6 +217,11 @@ require'marks'.setup {
   }
 }
 
+require("goto-preview").setup({
+  width = 80,
+  height = 90,
+  default_mappings = true,
+})
 require("formatter").setup {
   -- Use the special "*" filetype for defining formatter configurations on
   -- any filetype

@@ -109,21 +109,21 @@ if not configs.drupal then
   }
 end
 
-if not configs.my_scss_lsp then
-  configs.my_scss_lsp = {
-    default_config = {
-      cmd = { '/home/ron/programs/scss-lsp-rust/target/debug/scss-lsp' },
-      filetypes = { 'css', 'scss' },
-      root_dir = function(fname)
-        return require("lspconfig").util.root_pattern('.git')(fname)
-      end
-    },
-  }
-end
+-- if not configs.my_scss_lsp then
+--   configs.my_scss_lsp = {
+--     default_config = {
+--       cmd = { '/home/ron/programs/scss-lsp-rust/target/debug/scss-lsp' },
+--       filetypes = { 'css', 'scss' },
+--       root_dir = function(fname)
+--         return require("lspconfig").util.root_pattern('.git')(fname)
+--       end
+--     },
+--   }
+-- end
 
 lsp.setup()
 require("lspconfig").drupal.setup { autostart = true }
-require("lspconfig").my_scss_lsp.setup { autostart = true }
+-- require("lspconfig").my_scss_lsp.setup { autostart = true }
 
 vim.diagnostic.config({
   virtual_text = true,

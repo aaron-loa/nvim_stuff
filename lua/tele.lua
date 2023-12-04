@@ -34,7 +34,6 @@ vim.keymap.set('n', '<leader>cs', ":lua require('telescope.builtin').colorscheme
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 vim.keymap.set('n', '<leader>fe', find_directory_and_focus, {})
-vim.keymap.set('n', '<leader>ft', ":Telescope tasks<CR>", {})
 vim.keymap.set('n', '<leader>fs', function()
 	builtin.grep_string({ search = vim.fn.input("Grep > ") })
 end)
