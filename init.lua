@@ -1,4 +1,3 @@
-require("keybinds")
 require("options")
 require("packer_config")
 require("tele")
@@ -7,6 +6,7 @@ require("treesitter_conf")
 require("harpoon_conf")
 require("custom_commands")
 require("lsp_conf")
+require("keybinds")
 -- require'nvim-web-devicons'.setup()
 -- vim.cmd[[colorscheme catppuccin-mocha]]
 vim.cmd([[colorscheme kanagawa]])

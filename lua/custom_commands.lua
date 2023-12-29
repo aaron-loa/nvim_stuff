@@ -13,6 +13,7 @@ vim.api.nvim_create_user_command("Reset", function()
   vim.cmd([[source ~/.config/nvim/lua/custom_snippets.lua]])
 end, {})
 
+
 vim.api.nvim_create_user_command("Annotate", function()
   local current_node = vim.treesitter.get_node()
   local bufnr = vim.api.nvim_get_current_buf()
