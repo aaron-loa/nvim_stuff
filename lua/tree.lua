@@ -1,40 +1,37 @@
 -- OR setup with some options
 --
 
-local width_ratio = 0.5
-local heigth_ratio = 0.8
+local width_ratio = 0.6
+local heigth_ratio = 0.9
 
 local function set_win()
   local lines = vim.opt.lines:get() - vim.opt.cmdheight:get()
   local columns = vim.opt.columns:get()
 
   local columns_width = math.floor(columns * width_ratio)
-  local leftover_width = columns - columns_width
-  local start_column = math.floor(leftover_width / 2)
-  local window_h = math.floor(lines * heigth_ratio)
-  local center_y = math.floor(((vim.opt.lines:get() - window_h) / 2) - vim.opt.cmdheight:get())
+  local padding_x = columns - columns_width
+  local start_column = math.floor(padding_x / 2)
+
+  local window_height = math.floor(lines * heigth_ratio)
+  local padding_y = lines - window_height
+  local start_row = math.floor(padding_y / 2)
+
   return {
     relative = "editor",
     border = "rounded",
     width = columns_width,
-    height = window_h,
-    row = center_y,
+    height = window_height,
+    row = start_row,
     col = start_column,
   }
 end
 
-local tree = require("nvim-tree")
 require("nvim-tree").setup({
   sort_by = "case_sensitive",
   open_on_setup = true,
   reload_on_bufenter = true,
   respect_buf_cwd = false,
   sync_root_with_cwd = false,
-  actions = {
-    open_file = {
-      resize_window = true
-    }
-  },
   view = {
     float = {
       enable = true,
@@ -96,7 +93,6 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
   callback = function()
     if tree_view.is_visible() then
       tree_view.close()
-      print("close")
       tree_api.open()
     end
   end

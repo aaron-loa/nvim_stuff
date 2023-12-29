@@ -10,13 +10,13 @@ vim.keymap.set("n", "<leader>R", [[:lua require("memento").toggle()<CR>]], { sil
 vim.keymap.set("n", "<leader>cc", ":Telescope neoclip default<CR>", { silent = true })
 vim.keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>", { silent = true })
 vim.keymap.set("n", "<leader>fa", vim.lsp.buf.format)                            -- custom command
-vim.keymap.set("n", "<leader>fa", ":lua vim.lsp.buf.format({async = true})<CR>") -- custom command
 vim.keymap.set("n", "<leader>fq", ":SortDeclarations<CR>", { silent = true })    -- custom command
 vim.keymap.set("n", "<leader>gg", ":LazyGit<CR>")
 vim.keymap.set("n", "<leader>le", vim.diagnostic.goto_next, { buffer = vim.api.nvim_get_current_buf() })
 vim.keymap.set("n", "<leader>lw", vim.diagnostic.goto_prev, { buffer = vim.api.nvim_get_current_buf() })
 vim.keymap.set("n", "<leader>pV", ":Telescope projects<CR>", { silent = true })
 vim.keymap.set("n", "<leader>pv", ":ProjectView <CR>", { silent = true }) -- custom command
+vim.keymap.set("n", "<leader>fp", ":Telescope resume <CR>", { silent = true }) -- custom command
 vim.keymap.set("n", "<leader>r", ":NvimTreeFindFile<CR>", { silent = true })
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("n", "<leader>tp", [[:TroubleToggle telescope <CR>]], { silent = true })

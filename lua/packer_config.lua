@@ -5,9 +5,10 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   execute("!git clone https://github.com/wbthomason/packer.nvim " .. install_path)
   execute("packadd packer.nvim")
 end
+
 require("packer").startup(function()
-  use "mhartington/formatter.nvim"
-  use "mfussenegger/nvim-lint"
+  use "mhartington/formatter.nvim" -- TODO: change this none ls
+  use "mfussenegger/nvim-lint"  -- is this good?
   use({
     "L3MON4D3/LuaSnip",
     -- follow latest release.
@@ -16,7 +17,11 @@ require("packer").startup(function()
     run = "make install_jsregexp"
   })
   use "rafamadriz/friendly-snippets"
-  use("ThePrimeagen/harpoon")
+  use {
+      "ThePrimeagen/harpoon",
+      branch = "harpoon2",
+      requires = { {"nvim-lua/plenary.nvim"} }
+  }
   use("ethanholz/nvim-lastplace") -- good stuff
   use "rebelot/kanagawa.nvim"
   use("folke/tokyonight.nvim")
@@ -34,14 +39,18 @@ require("packer").startup(function()
   use("nvim-treesitter/nvim-treesitter-context")
   use("nvim-treesitter/playground")
   use("saadparwaiz1/cmp_luasnip") -- Completion source
-  use("tomtom/tcomment_vim")
-  use("tpope/vim-surround")
-  use("wbthomason/packer.nvim")
+  use { "numToStr/Comment.nvim",
+    config = function()
+      require('Comment').setup()
+    end
+  }
+  use("tpope/vim-surround")  -- TODO change this to nvim surround
+  use("wbthomason/packer.nvim")   -- maybe try lazy nvim in the future
   use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
   use({
-    "lewis6991/gitsigns.nvim",
+    "lewis6991/gitsigns.nvim", -- TODO make keybinds for this
   })
-  use "chentoast/marks.nvim"
+  use "chentoast/marks.nvim" -- TODO learn how to use this effectively
   use({
     "nvim-lualine/lualine.nvim",
     requires = { "kyazdani42/nvim-web-devicons", opt = false },
@@ -94,11 +103,11 @@ require("packer").startup(function()
     end,
   })
   use({ -- preview definition
-    "rmagatti/goto-preview",
+    "rmagatti/goto-preview", -- TODO  make gd always open with goto-preview if the function is a non git file
     config = function()
       require("goto-preview").setup({
-        width = 120,
-        height = 90,
+        width = 80,
+        height = 80,
         default_mappings = true,
       })
     end,
@@ -115,7 +124,7 @@ require("packer").startup(function()
     end,
   })
   use({
-    "Pocco81/auto-save.nvim",
+    "okuuva/auto-save.nvim",
     config = function()
       require("auto-save").setup
       {
@@ -132,16 +141,8 @@ require("packer").startup(function()
     -- Uncomment next line if you want to follow only stable versions
     -- tag = "*"
   })
-  -- use({
-  --   "folke/zen-mode.nvim",
-  --   opts = {
-  --     -- your configuration comes here
-  --     -- or leave it empty to use the default settings
-  --     -- refer to the configuration section below
-  --   },
-  -- })
   use({
-    "folke/trouble.nvim", -- <leader>tt
+    "folke/trouble.nvim", -- <leader>tt TODO learn how to use this
     requires = "nvim-tree/nvim-web-devicons",
     config = function()
       require("trouble").setup({
@@ -163,6 +164,7 @@ require("telescope").load_extension("neoclip")
 -- require("telescope").load_extension("macroscope")
 require("telescope").load_extension("aerial")
 require 'lsp_signature'.setup()
+
 local trouble = require("trouble.providers.telescope")
 local lga_actions = require("telescope-live-grep-args.actions")
 
@@ -219,7 +221,7 @@ require 'marks'.setup {
 
 require("goto-preview").setup({
   width = 80,
-  height = 90,
+  height = 25,
   default_mappings = true,
 })
 require("formatter").setup {
