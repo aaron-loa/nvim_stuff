@@ -9,7 +9,7 @@ vim.keymap.set("n", "<S-Tab>", ":b#<CR>", { silent = true })
 vim.keymap.set("n", "<leader>R", [[:lua require("memento").toggle()<CR>]], { silent = true })
 vim.keymap.set("n", "<leader>cc", ":Telescope neoclip default<CR>", { silent = true })
 vim.keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>", { silent = true })
-vim.keymap.set("n", "<leader>fa", vim.lsp.buf.format)                            -- custom command
+vim.keymap.set("n", "<leader>fa", vim.lsp.buf.format)
 vim.keymap.set("n", "<leader>fq", ":SortDeclarations<CR>", { silent = true })    -- custom command
 vim.keymap.set("n", "<leader>gg", ":LazyGit<CR>")
 vim.keymap.set("n", "<leader>le", vim.diagnostic.goto_next, { buffer = vim.api.nvim_get_current_buf() })
@@ -27,9 +27,9 @@ vim.keymap.set("n", "<leader>dr", ":lua require('builder').setup()<CR>", { silen
 vim.keymap.set("n", ">", ">>", { silent = true })
 vim.keymap.set("n", "x", [[v"_d]])               -- remove single character and put it in void register
 vim.keymap.set("n", "zz", "zz zH")               -- center cursor
-vim.keymap.set("n", "ZZ", ":qa!<CR>")            -- center cursor
+vim.keymap.set("n", "ZZ", ":qa!<CR>")
 
-vim.keymap.set("n", "md", "`")                   -- reasonable marks
+vim.keymap.set("n", "mg", "`")                   -- reasonable marks
 
 vim.keymap.set("v", "<c-j>", ":m '>+1<CR>gv=gv") -- move selection one line up
 vim.keymap.set("v", "<c-k>", ":m '<-2<CR>gv=gv") -- down
@@ -41,6 +41,7 @@ vim.keymap.set("n", "<F9>", ":DapToggleBreakpoint<CR>")
 
 vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.keymap.set("x", "<leader>p", [["_dP]])
+
 local ls = require("luasnip")
 vim.keymap.set({ "i" }, "<C-K>", function() ls.expand() end, { silent = true })
 vim.keymap.set({ "i", "s" }, "<C-L>", function() ls.jump(1) end, { silent = true })
