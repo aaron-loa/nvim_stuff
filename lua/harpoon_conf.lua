@@ -1,13 +1,14 @@
 local harpoon = require("harpoon")
+local custom_utils = require("utils")
 -- REQUIRED
 --
-local git_error = "fatal: not a git repository (or any of the parent directories): .git"
 
 harpoon:setup({
   settings = {
     key = function()
-      local path = vim.fn.system('git rev-parse --show-toplevel')
-      if path == git_error then
+      local path = custom_utils.git_path()
+
+      if path == nil then
         return vim.fn.getcwd()
       else
         return path

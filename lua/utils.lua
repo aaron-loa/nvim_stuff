@@ -1,7 +1,6 @@
 local M = {}
 
 function M.CustomGoToDefinition()
-  vim.print("hello")
   local coord = vim.api.nvim_win_get_cursor(0)
   local lsp_response = vim.lsp.buf_request_sync(0, "textDocument/definition", {
       textDocument = vim.lsp.util.make_text_document_params(),
@@ -26,6 +25,22 @@ function M.CustomGoToDefinition()
       end
       break
     end
+  end
+end
+
+local git_error = "fatal: not a git repository (or any of the parent directories): .git"
+
+function M.git_path()
+  local git_output = vim.fn.systemlist('git rev-parse --show-toplevel')
+
+  if type(git_output[1]) ~= 'string' then
+    return nil
+  end
+  local git_path = git_output[1]
+  if git_path == git_error then
+    return nil
+  else
+    return git_path
   end
 end
 

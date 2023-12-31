@@ -18,7 +18,10 @@ vim.keymap.set("n", "<leader>pV", ":Telescope projects<CR>", { silent = true })
 vim.keymap.set("n", "<leader>pv", ":ProjectView <CR>", { silent = true })      -- custom command
 vim.keymap.set("n", "<leader>fp", ":Telescope resume <CR>", { silent = true }) -- custom command
 vim.keymap.set("n", "<leader>r", ":NvimTreeFindFile<CR>", { silent = true })
+
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("v", "<leader>s", [[:s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
 vim.keymap.set("n", "<leader>tp", [[:TroubleToggle telescope <CR>]], { silent = true })
 vim.keymap.set("n", "<leader>tq", [[:TroubleToggle quickfix <CR>]], { silent = true })
 vim.keymap.set("n", "<leader>tt", [[:TroubleToggle workspace_diagnostics <CR>]], { silent = true })
