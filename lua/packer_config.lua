@@ -113,7 +113,7 @@ require("lazy").setup({
   "github/copilot.vim",
   {
     "VonHeikemen/lsp-zero.nvim",
-    branch = "v2.x",
+    branch = "v3.x",
     dependencies = {
       -- LSP Support
       { "neovim/nvim-lspconfig" },
@@ -156,8 +156,8 @@ require("lazy").setup({
     event = "VeryLazy",
     config = function()
       require("goto-preview").setup({
-        width = 80,
-        height = 80,
+        width = 80 + 15,
+        height = 70,
         default_mappings = true,
       })
     end,
@@ -275,11 +275,6 @@ require 'marks'.setup {
   }
 }
 
-require("goto-preview").setup({
-  width = 80,
-  height = 25,
-  default_mappings = true,
-})
 require("formatter").setup {
   -- Use the special "*" filetype for defining formatter configurations on
   -- any filetype

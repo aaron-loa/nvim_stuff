@@ -1,10 +1,16 @@
-
 require("neodev").setup({})
 
-local lsp = require("lsp-zero")
-lsp.preset("recommended")
+local lsp_zero = require("lsp-zero")
 
-lsp.on_attach(function(client, bufnr)
+require('mason').setup({})
+require('mason-lspconfig').setup({
+  ensure_installed = {},
+  handlers = {
+    lsp_zero.default_setup,
+  },
+})
+
+lsp_zero.on_attach(function(client, bufnr)
   local opts = { buffer = bufnr, remap = false }
   vim.keymap.set("n", "gn", function()
     vim.diagnostic.goto_next()
@@ -13,9 +19,19 @@ lsp.on_attach(function(client, bufnr)
     vim.diagnostic.goto_prev()
   end, opts)
   vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-  -- vim.keymap.set("n", "K", function()
-  --   vim.diagnostic.overrides()
-  -- end, opts)
+
+  vim.keymap.set("n", "gd", function() require("utils").CustomGoToDefinition() end)
+  vim.keymap.set('n', 'K',  function() vim.lsp.buf.hover() end)
+  vim.keymap.set('n', 'gD', function() vim.lsp.buf.definition() end)
+  vim.keymap.set('n', '<leader>gd', function() vim.lsp.buf.declaration() end)
+  vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end)
+  vim.keymap.set('n', 'go', function() vim.lsp.buf.type_definition() end)
+  vim.keymap.set('n', 'gr',  function() vim.lsp.buf.references() end)
+  vim.keymap.set('n', 'gs',  function() vim.lsp.buf.signature_help() end)
+  vim.keymap.set('n', '<F2>', function() vim.lsp.buf.rename() end)
+  vim.keymap.set('n', '<F4>', function() vim.lsp.buf.code_action() end)
+  vim.keymap.set('x', '<F4>', function() vim.lsp.buf.range_code_action() end)
+  vim.keymap.set('n', 'gl', function() vim.lsp.diagnostic.open_float() end)
 end)
 
 -- local config = {
@@ -40,6 +56,7 @@ local configs = require 'lspconfig.configs'
 require("lspconfig").rust_analyzer.setup({
   on_init = function() print("rustanalyzer init") end
 })
+
 require("lspconfig").intelephense.setup({
   filetypes = { "php", "inc", "module", "yml", "install", "phtml", "theme" },
   on_attach = function() print("loaded intelephense") end,
@@ -88,7 +105,7 @@ end
 --   }
 -- end
 
-lsp.setup()
+lsp_zero.setup()
 require("lspconfig").drupal.setup { autostart = true }
 -- require("lspconfig").my_scss_lsp.setup { autostart = true }
 
