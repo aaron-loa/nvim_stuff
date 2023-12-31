@@ -1,72 +1,120 @@
-local execute = vim.api.nvim_command
-local install_path = vim.fn.stdpath("config") .. "/pack/packer/opt/packer.nvim"
-
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  execute("!git clone https://github.com/wbthomason/packer.nvim " .. install_path)
-  execute("packadd packer.nvim")
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
+vim.opt.rtp:prepend(lazypath)
 
-require("packer").startup(function()
-  use "mhartington/formatter.nvim" -- TODO: change this none ls
-  use "mfussenegger/nvim-lint"  -- is this good?
-  use({
+require("lazy").setup({
+  {
+    "mhartington/formatter.nvim",
+    event = "VeryLazy",
+    lazy = true,
+  }, -- TODO: change this none ls
+  {
+    "mfussenegger/nvim-lint",
+    event = "VeryLazy",
+    lazy = true,
+  }, -- is this good?
+  {
     "L3MON4D3/LuaSnip",
     -- follow latest release.
-    tag = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!:).
-    run = "make install_jsregexp"
-  })
-  use "rafamadriz/friendly-snippets"
-  use {
-      "ThePrimeagen/harpoon",
-      branch = "harpoon2",
-      requires = { {"nvim-lua/plenary.nvim"} }
-  }
-  use("ethanholz/nvim-lastplace") -- good stuff
-  use "rebelot/kanagawa.nvim"
-  use("folke/tokyonight.nvim")
-  use("hrsh7th/cmp-buffer")                  -- Completion source
-  use("hrsh7th/cmp-nvim-lsp")                -- Completion source
-  use("hrsh7th/nvim-cmp")                    -- Autocomplete engine
-  use "folke/neodev.nvim"
-  use("kdheepak/lazygit.nvim")               -- <leader>gg
-  use("lukas-reineke/indent-blankline.nvim") --blank lines
-  use("mbbill/undotree")                     --<F5>
-  use {
-    "ray-x/lsp_signature.nvim",              -- automatic hover on function
-  }
-  use("norcalli/nvim-colorizer.lua")
-  use("nvim-treesitter/nvim-treesitter-context")
-  use("nvim-treesitter/playground")
-  use("saadparwaiz1/cmp_luasnip") -- Completion source
-  use { "numToStr/Comment.nvim",
+    build = "make install_jsregexp",
+    event = "VeryLazy",
+    lazy = true
+  },
+  {
+    "rafamadriz/friendly-snippets",
+    event = "VeryLazy",
+    lazy = true
+  },
+  {
+    "nvim-lua/plenary.nvim",
+    lazy = true
+  },
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    event = "BufEnter",
+    dependencies = { { "nvim-lua/plenary.nvim" } }
+  },
+  "ethanholz/nvim-lastplace", -- good stuff
+  "rebelot/kanagawa.nvim",
+  "folke/tokyonight.nvim",
+  "hrsh7th/cmp-buffer",   -- Completion source
+  "hrsh7th/cmp-nvim-lsp", -- Completion source
+  "hrsh7th/nvim-cmp",     -- Autocomplete engine
+  {
+    "NeogitOrg/neogit",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",         -- required
+      "sindrets/diffview.nvim",        -- optional - Diff integration
+      -- Only one of these is needed, not both.
+      "nvim-telescope/telescope.nvim", -- optional
+    },
+    config = true,
+  },
+  {
+    "folke/neodev.nvim",
+    event = "VeryLazy",
+  },
+  "kdheepak/lazygit.nvim",               -- <leader>gg
+  "lukas-reineke/indent-blankline.nvim", --blank lines
+  "mbbill/undotree",                     --<F5>
+  {
+    "ray-x/lsp_signature.nvim",          -- automatic hover on function
+    event = "VeryLazy",
+  },
+  "norcalli/nvim-colorizer.lua",
+  "nvim-treesitter/nvim-treesitter-context",
+  "nvim-treesitter/playground",
+  "saadparwaiz1/cmp_luasnip", -- Completion source
+  {
+    "numToStr/Comment.nvim",
     config = function()
       require('Comment').setup()
+    end,
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({
+        -- Configuration here, or leave empty to use defaults
+      })
     end
-  }
-  use("tpope/vim-surround")  -- TODO change this to nvim surround
-  use("wbthomason/packer.nvim")   -- maybe try lazy nvim in the future
-  use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
-  use({
+  },
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  {
     "lewis6991/gitsigns.nvim", -- TODO make keybinds for this
-  })
-  use "chentoast/marks.nvim" -- TODO learn how to use this effectively
-  use({
+  },
+  "chentoast/marks.nvim",      -- TODO learn how to use this effectively
+  {
     "nvim-lualine/lualine.nvim",
-    requires = { "kyazdani42/nvim-web-devicons", opt = false },
-  })
-  use({
+    dependencies = { "kyazdani42/nvim-web-devicons", opt = false },
+  },
+  {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.4",
     -- or                            , branch = '0.1.x',
-    requires = { { "nvim-lua/plenary.nvim" } },
-  })
-  use "nvim-telescope/telescope-live-grep-args.nvim"
-  use "github/copilot.vim"
-  use({
+    dependencies = { { "nvim-lua/plenary.nvim" } },
+  },
+  "nvim-telescope/telescope-live-grep-args.nvim",
+  "github/copilot.vim",
+  {
     "VonHeikemen/lsp-zero.nvim",
     branch = "v2.x",
-    requires = {
+    dependencies = {
       -- LSP Support
       { "neovim/nvim-lspconfig" },
       { "williamboman/mason.nvim" },
@@ -85,25 +133,27 @@ require("packer").startup(function()
       -- Snippet Collection (Optional)
       { "rafamadriz/friendly-snippets" },
     },
-  })
-  use({
+  },
+  {
     "nvim-tree/nvim-tree.lua",
-    requires = {
+    dependencies = {
       "nvim-tree/nvim-web-devicons", -- optional, for file icons
     },
     tag = "nightly",                 -- optional, updated every week. (see issue #1193)
-  })
-  use({                              -- :AerialOpen
+  },
+  {                                  -- :AerialOpen
     "stevearc/aerial.nvim",
+    event = "VeryLazy",
     config = function()
       require("aerial").setup(
         {
           backends = { "treesitter", "lsp", "markdown", "man" },
         })
     end,
-  })
-  use({ -- preview definition
+  },
+  {                          -- preview definition
     "rmagatti/goto-preview", -- TODO  make gd always open with goto-preview if the function is a non git file
+    event = "VeryLazy",
     config = function()
       require("goto-preview").setup({
         width = 80,
@@ -111,39 +161,45 @@ require("packer").startup(function()
         default_mappings = true,
       })
     end,
-  })
-  use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } }
-  use({ -- clipboard manager
+  },
+  {
+    "rcarriga/nvim-dap-ui",
+    event = "VeryLazy",
+    dependencies = { "mfussenegger/nvim-dap" }
+  },
+  { -- clipboard manager
     "AckslD/nvim-neoclip.lua",
-    requires = {
+    dependencies = {
       { "kkharji/sqlite.lua" },
       { "nvim-telescope/telescope.nvim" },
     },
     config = function()
       require("neoclip").setup()
     end,
-  })
-  use({
-    "okuuva/auto-save.nvim",
-    config = function()
-      require("auto-save").setup
-      {
-        trigger_events = {},
-      }
-    end,
-  })
-  use({
+  },
+  -- use({
+  --   "okuuva/auto-save.nvim",
+  --   config = function()
+  --     require("auto-save").setup
+  --     {
+  --       trigger_events = {},
+  --     }
+  --   end,
+  -- })
+  {
     "danymat/neogen",
+    event = "VeryLazy",
     config = function()
       require("neogen").setup({ snippet_engine = "luasnip" })
     end,
-    requires = "nvim-treesitter/nvim-treesitter",
+    dependencies = "nvim-treesitter/nvim-treesitter",
     -- Uncomment next line if you want to follow only stable versions
     -- tag = "*"
-  })
-  use({
+  },
+  {
     "folke/trouble.nvim", -- <leader>tt TODO learn how to use this
-    requires = "nvim-tree/nvim-web-devicons",
+    event = "VeryLazy",
+    dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
       require("trouble").setup({
         -- your configuration comes here
@@ -151,8 +207,8 @@ require("packer").startup(function()
         -- refer to the configuration section below
       })
     end,
-  })
-end)
+  },
+})
 
 require("neoclip").setup({ enable_persistent_history = true, default_register = "+" })
 require("gitsigns").setup()
@@ -233,3 +289,4 @@ require("formatter").setup {
     require("formatter.filetypes.any").remove_trailing_whitespace
   }
 }
+require("neogit").setup {}

@@ -1,3 +1,5 @@
+vim.g.mapleader = " "
+
 -- vim.opt.guicursor = ""
 vim.opt.clipboard = "unnamedplus"
 vim.o.updatetime = 50

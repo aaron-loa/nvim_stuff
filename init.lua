@@ -12,7 +12,6 @@ require("keybinds")
 vim.cmd([[colorscheme kanagawa]])
 
 local dap = require('dap')
-
 dap.adapters.php = {
   type = 'executable',
   command = 'node',
@@ -33,7 +32,7 @@ dap.configurations.php = {
     }
   }
 }
-require("auto-save")
+
 -- vim.cmd([[highlight HighlightedLineNr1 guifg=Yellow ctermfg=3]])
 -- vim.cmd([[highlight HighlightedLineNr2 guifg=Green ctermfg=2]])
 -- vim.cmd([[highlight HighlightedLineNr3 guifg=Cyan ctermfg=6]])
@@ -69,6 +68,7 @@ require("formatter").setup {
     rust = require("formatter.filetypes.rust").rustfmt
   }
 }
+
 
 require("custom_snippets")
 vim.cmd([[

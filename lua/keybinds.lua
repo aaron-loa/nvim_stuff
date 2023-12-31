@@ -1,5 +1,3 @@
-vim.g.mapleader = " "
-
 local function CustomGoToDefinition()
   local coord = vim.api.nvim_win_get_cursor(0)
   local lsp_response = vim.lsp.buf_request_sync(0, "textDocument/definition", {
