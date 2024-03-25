@@ -32,8 +32,11 @@ vim.keymap.set("n", "x", [[v"_d]]) -- remove single character and put it in void
 vim.keymap.set("n", "zz", "zz zH") -- center cursor
 vim.keymap.set("n", "ZZ", ":qa!<CR>")
 
+
 vim.keymap.set("n", "mg", "`")                   -- reasonable marks
 
+vim.keymap.set("v", ">", ">gv", { silent = true })
+vim.keymap.set("v", "<", "<gv", { silent = true })
 vim.keymap.set("v", "<c-j>", ":m '>+1<CR>gv=gv") -- move selection one line up
 vim.keymap.set("v", "<c-k>", ":m '<-2<CR>gv=gv") -- down
 vim.keymap.set("v", "J", "j")                    -- can hold shift while in v mode

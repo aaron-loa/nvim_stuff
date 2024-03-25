@@ -16,25 +16,34 @@ require("lazy").setup({
     "mhartington/formatter.nvim",
     event = "VeryLazy",
     lazy = true,
-  }, -- TODO: change this none ls
+  },
   {
-    "mfussenegger/nvim-lint",
+    "nvimtools/none-ls.nvim",
     event = "VeryLazy",
-    lazy = true,
-  }, -- is this good?
+    setup = function()
+      local null_ls = require("null-ls")
+      return {
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.diagnostics.eslint,
+        null_ls.builtins.completion.spell,
+        null_ls.builtins.diagnostics.cpplint,
+      }
+    end,
+  },
   {
     "L3MON4D3/LuaSnip",
     -- follow latest release.
     version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!:).
+    dependencies = { "rafamadriz/friendly-snippets" },
     build = "make install_jsregexp",
-    event = "VeryLazy",
-    lazy = true
-  },
-  {
-    "rafamadriz/friendly-snippets",
-    event = "VeryLazy",
-    lazy = true
+    lazy = false,
+    priority = 1000,
+    init = function()
+      require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./drupal-smart-snippets" } })
+      require("luasnip.loaders.from_vscode").lazy_load()
+      require("luasnip.loaders.from_snipmate").lazy_load()
+    end,
   },
   {
     "nvim-lua/plenary.nvim",
@@ -47,11 +56,72 @@ require("lazy").setup({
     dependencies = { { "nvim-lua/plenary.nvim" } }
   },
   "ethanholz/nvim-lastplace", -- good stuff
-  "rebelot/kanagawa.nvim",
-  "folke/tokyonight.nvim",
-  "hrsh7th/cmp-buffer",   -- Completion source
-  "hrsh7th/cmp-nvim-lsp", -- Completion source
-  "hrsh7th/nvim-cmp",     -- Autocomplete engine
+  {
+     -- https://github.com/rmagatti/auto-session
+    'rmagatti/auto-session',
+    init = function()
+    require("auto-session").setup {
+      auto_session_enabled = true,
+      log_level = "error",
+      cwd_change_handling = {
+        post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
+          require("lualine").refresh() -- refresh lualine so the new session name is displayed in the status bar
+        end,
+      },
+    }
+    end
+  },
+  {
+    "rebelot/kanagawa.nvim",
+    config = function()
+    end,
+    init = function()
+      vim.cmd("colorscheme kanagawa")
+    end,
+    lazy = false,
+    priority = 2000,
+  },
+  {
+    "folke/tokyonight.nvim",
+    lazy = true,
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    config = function()
+      require 'cmp'.setup {
+        snippet = {
+          expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+          end,
+        },
+        -- mapping = {
+        --   ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        --   ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        --   ['<C-Space>'] = cmp.mapping.complete(),
+        --   ['<C-e>'] = cmp.mapping.close(),
+        --   ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        --   ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+        --   ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+        -- },
+        sources = {
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'buffer' },
+          { name = 'path' },
+          { name = 'nvim_lua' },
+        }
+      }
+    end,
+    dependencies = {
+      "hrsh7th/cmp-buffer",       -- Completion source
+      "hrsh7th/cmp-nvim-lsp",     -- Completion source
+      "hrsh7th/cmp-path",         -- Completion source
+      "hrsh7th/cmp-nvim-lua",     -- Completion source
+      "saadparwaiz1/cmp_luasnip", -- Completion source
+    },
+    priority = 800,
+    lazy = false
+  }, -- Autocomplete engine
   {
     "NeogitOrg/neogit",
     event = "VeryLazy",
@@ -94,7 +164,7 @@ require("lazy").setup({
       })
     end
   },
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", priority = 1200 },
   {
     "lewis6991/gitsigns.nvim", -- TODO make keybinds for this
   },
@@ -131,7 +201,6 @@ require("lazy").setup({
       -- Snippets
       { "L3MON4D3/LuaSnip" },
       -- Snippet Collection (Optional)
-      { "rafamadriz/friendly-snippets" },
     },
   },
   {
@@ -164,7 +233,6 @@ require("lazy").setup({
   },
   {
     "rcarriga/nvim-dap-ui",
-    event = "VeryLazy",
     dependencies = { "mfussenegger/nvim-dap" }
   },
   { -- clipboard manager
@@ -188,7 +256,7 @@ require("lazy").setup({
   -- })
   {
     "danymat/neogen",
-    event = "VeryLazy",
+    -- event = "VeryLazy",
     config = function()
       require("neogen").setup({ snippet_engine = "luasnip" })
     end,
@@ -258,7 +326,7 @@ require("nvim-treesitter.configs").setup({
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
+    additional_vim_regex_highlighting = { "markdown" },
   },
   indent = {
     enable = true,

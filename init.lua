@@ -9,7 +9,6 @@ require("lsp_conf")
 require("keybinds")
 -- require'nvim-web-devicons'.setup()
 -- vim.cmd[[colorscheme catppuccin-mocha]]
-vim.cmd([[colorscheme kanagawa]])
 
 local dap = require('dap')
 dap.adapters.php = {
@@ -32,7 +31,6 @@ dap.configurations.php = {
     }
   }
 }
-
 -- vim.cmd([[highlight HighlightedLineNr1 guifg=Yellow ctermfg=3]])
 -- vim.cmd([[highlight HighlightedLineNr2 guifg=Green ctermfg=2]])
 -- vim.cmd([[highlight HighlightedLineNr3 guifg=Cyan ctermfg=6]])
@@ -77,7 +75,3 @@ vim.cmd([[
     autocmd User FormatterPost checktime
   augroup END
 ]])
-
-require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./drupal-smart-snippets/" } })
-require("luasnip.loaders.from_vscode").lazy_load()
-require("luasnip.loaders.from_snipmate").lazy_load()
