@@ -5,8 +5,7 @@ function M.CustomGoToDefinition()
   local lsp_response = vim.lsp.buf_request_sync(0, "textDocument/definition", {
       textDocument = vim.lsp.util.make_text_document_params(),
       position = { line = coord[1] - 1, character = coord[2] }
-    },
-    1000)
+    })
   if lsp_response == nil then
     vim.print("null response from LSP??")
     return
@@ -68,6 +67,11 @@ function M.git_path()
   else
     return git_path
   end
+end
+
+
+function M.get_nvim_tree_node_path()
+  return require("nvim-tree.lib").get_node_at_cursor().absolute_path or nil
 end
 
 return M

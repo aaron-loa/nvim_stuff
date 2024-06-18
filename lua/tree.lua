@@ -26,6 +26,8 @@ local function set_win()
   }
 end
 
+
+
 require("nvim-tree").setup({
   sort_by = "case_sensitive",
   reload_on_bufenter = true,

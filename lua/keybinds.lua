@@ -1,3 +1,7 @@
+local function query_word_under_cursor()
+  local word = vim.fn.expand("<cword>")
+  vim.cmd([[Telescope lsp_workspace_symbols query=]] .. word)
+end
 
 vim.keymap.set("n", "<", "<<", { silent = true })
 vim.keymap.set("n", "<C-d>", "<C-d>zz <CR>", { silent = true })
@@ -6,7 +10,6 @@ vim.keymap.set("n", "<leader>ft", ":Telescope aerial <CR>", { silent = true })
 vim.keymap.set("n", "<F5>", vim.cmd.UndotreeToggle)
 
 vim.keymap.set("n", "<S-Tab>", ":b#<CR>", { silent = true })
-vim.keymap.set("n", "<leader>R", [[:lua require("memento").toggle()<CR>]], { silent = true })
 vim.keymap.set("n", "<leader>cc", ":Telescope neoclip default<CR>", { silent = true })
 vim.keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>", { silent = true })
 vim.keymap.set("n", "<leader>fa", vim.lsp.buf.format)
@@ -18,9 +21,14 @@ vim.keymap.set("n", "<leader>pV", ":Telescope projects<CR>", { silent = true })
 vim.keymap.set("n", "<leader>pv", ":ProjectView <CR>", { silent = true })      -- custom command
 vim.keymap.set("n", "<leader>fp", ":Telescope resume <CR>", { silent = true }) -- custom command
 vim.keymap.set("n", "<leader>r", ":NvimTreeFindFile<CR>", { silent = true })
+vim.keymap.set("n", "<leader>fT", ":Telescope lsp_workspace_symbols <CR>", { silent = true })
+vim.keymap.set("n", "<leader>k", require('dap.ui.widgets').hover, { silent = true })
+vim.keymap.set("n", "<leader>sf", query_word_under_cursor, { silent = true })
 
+vim.keymap.set("n", "<leader>r", ":NvimTreeFindFile<CR>", { silent = true })
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 vim.keymap.set("v", "<leader>s", [[:s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
 
 vim.keymap.set("n", "<leader>tp", [[:TroubleToggle telescope <CR>]], { silent = true })
 vim.keymap.set("n", "<leader>tq", [[:TroubleToggle quickfix <CR>]], { silent = true })
@@ -45,10 +53,11 @@ vim.keymap.set("v", "K", "k")                    -- can hold shift while in v mo
 vim.keymap.set("n", "<F8>", ":lua require('dapui').toggle()<CR>")
 vim.keymap.set("n", "<F9>", ":DapToggleBreakpoint<CR>")
 
-vim.keymap.set("x", "<leader>p", [["_dP]])
-vim.keymap.set("x", "<leader>p", [["_dP]])
+vim.keymap.set("x", "<leader>p", [[P]])
+vim.keymap.set("n", "<F9>", ":DapToggleBreakpoint<CR>")
 
 local ls = require("luasnip")
+
 vim.keymap.set({ "i" }, "<C-K>", function() ls.expand() end, { silent = true })
 vim.keymap.set({ "i", "s" }, "<C-L>", function() ls.jump(1) end, { silent = true })
 vim.keymap.set({ "i", "s" }, "<C-H>", function() ls.jump(-1) end, { silent = true })

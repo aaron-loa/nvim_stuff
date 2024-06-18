@@ -57,18 +57,18 @@ require("lazy").setup({
   },
   "ethanholz/nvim-lastplace", -- good stuff
   {
-     -- https://github.com/rmagatti/auto-session
+    -- https://github.com/rmagatti/auto-session
     'rmagatti/auto-session',
     init = function()
-    require("auto-session").setup {
-      auto_session_enabled = true,
-      log_level = "error",
-      cwd_change_handling = {
-        post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
-          require("lualine").refresh() -- refresh lualine so the new session name is displayed in the status bar
-        end,
-      },
-    }
+      require("auto-session").setup {
+        auto_session_enabled = true,
+        log_level = "error",
+        cwd_change_handling = {
+          post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
+            require("lualine").refresh()     -- refresh lualine so the new session name is displayed in the status bar
+          end,
+        },
+      }
     end
   },
   {
@@ -88,27 +88,41 @@ require("lazy").setup({
   {
     "hrsh7th/nvim-cmp",
     config = function()
-      require 'cmp'.setup {
+      local cmp = require 'cmp'
+      local compare = require('cmp.config.compare')
+      local mapping = require('cmp.config.mapping')
+      local types = require('cmp.types')
+      cmp.setup {
         snippet = {
           expand = function(args)
             require('luasnip').lsp_expand(args.body)
           end,
         },
-        -- mapping = {
-        --   ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-        --   ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        --   ['<C-Space>'] = cmp.mapping.complete(),
-        --   ['<C-e>'] = cmp.mapping.close(),
-        --   ['<CR>'] = cmp.mapping.confirm({ select = true }),
-        --   ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-        --   ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
-        -- },
+        mapping = {
+          ['<C-n>'] = mapping(mapping.select_next_item({ behavior = types.cmp.SelectBehavior.Insert }), { 'i', 'c' }),
+          ['<C-p>'] = mapping(mapping.select_prev_item({ behavior = types.cmp.SelectBehavior.Insert }), { 'i', 'c' }),
+          ['<C-y>'] = mapping.confirm({ select = false }),
+          ['<C-z>'] = mapping.confirm({ select = false }),
+          --   ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+          --   ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+          --   ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          --   ['<C-u>'] = cmp.mapping.scroll_docs(4),
+          --   ['<C-z>'] = cmp.mapping.complete(),
+          -- --   ['<C-e>'] = cmp.mapping.close(),
+          --   -- ['<C-z>'] = cmp.mapping.confirm({ select = true }),
+          -- --   ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+          -- --   ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+        },
         sources = {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'buffer' },
           { name = 'path' },
           { name = 'nvim_lua' },
+          {
+            name = "lazydev",
+            group_index = 0,
+          }
         }
       }
     end,
@@ -134,15 +148,38 @@ require("lazy").setup({
     config = true,
   },
   {
-    "folke/neodev.nvim",
+    'Wansmer/treesj',
+    -- keys = { '<space>m', '<space>j', '<space>s' },
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('treesj').setup({ use_default_keymaps = true })
+    end
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+        { path = "love2d/library" },
+      },
+    },
+  },
+
+  { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
+  { "LuaCATS/love2d",       lazy = true }, -- love2d typings
+
+  "kdheepak/lazygit.nvim",                 -- <leader>gg
+  "mbbill/undotree",                       --<F5>
+  {
+    "ray-x/lsp_signature.nvim",            -- automatic hover on function
     event = "VeryLazy",
   },
-  "kdheepak/lazygit.nvim",               -- <leader>gg
-  "lukas-reineke/indent-blankline.nvim", --blank lines
-  "mbbill/undotree",                     --<F5>
   {
-    "ray-x/lsp_signature.nvim",          -- automatic hover on function
-    event = "VeryLazy",
+    'stevearc/dressing.nvim',
+    opts = {},
   },
   "norcalli/nvim-colorizer.lua",
   "nvim-treesitter/nvim-treesitter-context",
@@ -220,12 +257,23 @@ require("lazy").setup({
         })
     end,
   },
-  {                          -- preview definition
-    "rmagatti/goto-preview", -- TODO  make gd always open with goto-preview if the function is a non git file
+  {
+    "theHamsta/nvim-dap-virtual-text",
     event = "VeryLazy",
     config = function()
+      require("nvim-dap-virtual-text").setup(
+        {
+          only_first_definition = false,
+          all_references = true,
+        })
+    end,
+  },
+  {
+    "rmagatti/goto-preview", -- preview definition
+    event = "VeryLazy",      -- TODO  make gd always open with goto-preview if the function is a non git file
+    config = function()
       require("goto-preview").setup({
-        width = 80 + 15,
+        width = 100,
         height = 70,
         default_mappings = true,
       })
@@ -233,7 +281,7 @@ require("lazy").setup({
   },
   {
     "rcarriga/nvim-dap-ui",
-    dependencies = { "mfussenegger/nvim-dap" }
+    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" }
   },
   { -- clipboard manager
     "AckslD/nvim-neoclip.lua",
@@ -306,11 +354,11 @@ require("telescope").setup({
   defaults = {
     mappings = {
       i = {
-        ["<c-q>"] = trouble.open_with_trouble,
+        ["<c-q>"] = require("trouble.sources.telescope").open,
         ["<c-t>"] = lga_actions.quote_prompt({ postfix = " -t " }),
         ["<c-k>"] = lga_actions.quote_prompt()
       },
-      n = { ["<c-q>"] = trouble.open_with_trouble },
+      n = { ["<c-q>"] = require("trouble.sources.telescope").open },
     },
     file_ignore_patterns = { "node_modules", ".sql" }
   },

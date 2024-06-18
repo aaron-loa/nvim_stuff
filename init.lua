@@ -7,30 +7,10 @@ require("harpoon_conf")
 require("custom_commands")
 require("lsp_conf")
 require("keybinds")
+require("custom_dap")
 -- require'nvim-web-devicons'.setup()
 -- vim.cmd[[colorscheme catppuccin-mocha]]
 
-local dap = require('dap')
-dap.adapters.php = {
-  type = 'executable',
-  command = 'node',
-  args = { '/home/ron/.config/nvim/vscode-php-debug/out/phpDebug.js' }
-
-}
-
-dap.configurations.php = {
-  {
-    type = 'php',
-    request = 'launch',
-    name = 'Listen for Xdebug',
-    port = "9003",
-    log = false,
-    pathMappings = {
-      ["/app/"] = "${workspaceFolder}/", -- drupal
-      -- ["/application/"] = "${workspaceFolder}/" -- docker
-    }
-  }
-}
 -- vim.cmd([[highlight HighlightedLineNr1 guifg=Yellow ctermfg=3]])
 -- vim.cmd([[highlight HighlightedLineNr2 guifg=Green ctermfg=2]])
 -- vim.cmd([[highlight HighlightedLineNr3 guifg=Cyan ctermfg=6]])

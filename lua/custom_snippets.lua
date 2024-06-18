@@ -54,7 +54,7 @@ local function parse_yml(path)
 end
 
 local function get_current_module_name()
-  local uv = vim.loop
+  local uv = vim.uv
   local root_path = vim.fn.getcwd()
   local current_dir = vim.api.nvim_buf_get_name(0)
   local path_of_info_yml = ""

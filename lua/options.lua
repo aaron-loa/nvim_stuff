@@ -27,7 +27,7 @@ vim.opt.sidescrolloff = 5
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -36,3 +36,7 @@ vim.opt.colorcolumn = "80"
 vim.opt.spelllang = "hu"
 vim.opt.autoread = true
 vim.g.copilot_no_tab_map = true
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldenable = false

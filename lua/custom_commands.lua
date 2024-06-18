@@ -68,6 +68,17 @@ vim.api.nvim_create_user_command("W", function()
   vim.cmd([[write]])
 end, {})
 
+vim.api.nvim_create_user_command("Q", function()
+  vim.cmd([[quit]])
+end, {})
+vim.api.nvim_create_user_command("Qa", function()
+  vim.cmd([[qa]])
+end, {})
+
+vim.api.nvim_create_user_command("Wq", function()
+  vim.cmd([[writequit]])
+end, {})
+
 vim.api.nvim_create_user_command("E", function()
   vim.cmd([[edit]])
 end, {})
