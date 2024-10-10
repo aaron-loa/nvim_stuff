@@ -17,7 +17,7 @@ lsp_zero.on_attach(function(client, bufnr)
     vim.diagnostic.goto_prev()
   end, opts)
   vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-
+  vim.keymap.set("i", "<C-n>", function() vim.lsp.buf.completion({}) end)
   vim.keymap.set("n", "gd", function() require("utils").CustomGoToDefinition() end)
   vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end)
   vim.keymap.set('n', 'gD', function() vim.lsp.buf.definition() end)
@@ -28,74 +28,24 @@ lsp_zero.on_attach(function(client, bufnr)
   vim.keymap.set('n', 'gs', function() vim.lsp.buf.signature_help() end)
   vim.keymap.set('n', '<F2>', function() vim.lsp.buf.rename() end)
   vim.keymap.set('n', '<F4>', function() vim.lsp.buf.code_action() end)
-  vim.keymap.set('x', '<F4>', function() vim.lsp.buf.range_code_action() end)
+  vim.keymap.set('x', '<F3>', function() vim.lsp.buf.range_code_action() end)
   vim.keymap.set('n', 'gl', function() vim.diagnostic.open_float() end)
 end)
 
--- local config = {
---   settings = {
---     Lua = {
---       runtime = {
---         path = vim.api.nvim_get_runtime_file("", true),
---       },
---       workspace = {
---         -- Make the server aware of Neovim runtime files
---         library = {
---           vim.api.nvim_get_runtime_file("", true),
---         }
---       },
---     }
---   }
--- }
-
--- require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
 local configs = require 'lspconfig.configs'
-
--- require 'lspconfig'.lua_ls.setup {
---   on_init = function(client)
---     local path = client.workspace_folders[1].name
---     if not vim.loop.fs_stat(path .. '/.luarc.json') and not vim.loop.fs_stat(path .. '/.luarc.jsonc') then
---       client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
---         Lua = {
---           runtime = {
---             version = 'LuaJIT'
---           },
---           -- Make the server aware of Neovim runtime files
---           workspace = {
---             checkThirdParty = "enable",
---             library = {
---               vim.env.VIMRUNTIME,
---               "/home/ron/.luarocks/lib",
---               "/usr/lib/lua",
---               -- "${3rd}/luv/library"
---               -- llk
---               -- "${3rd}/busted/library",
---             }
---             -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
---             -- library = vim.api.nvim_get_runtime_file("", true)
---           }
---         }
---       })
---     end
---     return true
---   end
--- }
 
 require("lspconfig").clangd.setup({
   on_attach = function(client, bufnr)
     client.server_capabilities.offsetEncoding = { "utf-8" }
   end,
- cmd = { "clangd", "--offset-encoding=utf-16"} 
-})
-require("lspconfig").rust_analyzer.setup({
-  on_init = function() print("rustanalyzer init") end
+  cmd = { "clangd", "--offset-encoding=utf-16" }
 })
 
+-- require("lspconfig").rust_analyzer.setup({
+--   on_init = function() print("rustanalyzer init") end
+-- })
 
-local turn_off_specific_handlers = {
-  ['textDocument/documentSymbol'] = function() end,
-  ['workspace/symbol'] = function() end,
-}
+
 require("lspconfig").cssls.setup({
   on_attach = function(client, bufnr)
     client.server_capabilities.documentSymbolProvider = nil
@@ -114,9 +64,12 @@ require("lspconfig").tailwindcss.setup({
 
 require("lspconfig").intelephense.setup({
   filetypes = { "php", "inc", "module", "yml", "install", "phtml", "theme" },
-  on_attach = function() print("loaded intelephense") end,
+  -- on_attach = function() print("loaded intelephense") end,
   settings = {
     intelephense = {
+      format = {
+        braces = "k&r",
+      },
       files = {
         associations = {
           "*.inc",
@@ -143,7 +96,7 @@ if not configs.drupal then
       cmd = { '/home/ron/programs/drupal-lsp/drupal-lsp' },
       filetypes = { 'php' },
       root_dir = function(fname)
-        return require("lspconfig").util.root_pattern('composer.json', '.git')(fname)
+        return require("lspconfig").util.root_pattern('.git')(fname)
       end
     },
   }
@@ -156,28 +109,75 @@ if not configs.custom_scss then
       filetypes = { 'scss' },
       autostart = true,
       root_dir = function(fname)
-        return require("lspconfig").util.root_pattern('composer.json', '.git')(fname)
+        return require("lspconfig").util.root_pattern('.git')(fname)
       end
     },
   }
 end
 
--- if not configs.my_scss_lsp then
---   configs.my_scss_lsp = {
---     default_config = {
---       cmd = { '/home/ron/programs/scss-lsp-rust/target/debug/scss-lsp' },
---       filetypes = { 'css', 'scss' },
---       root_dir = function(fname)
---         return require("lspconfig").util.root_pattern('.git')(fname)
---       end
---     },
---   }
--- end
+if not configs.drupal_rust_lsp then
+  configs.drupal_rust_lsp = {
+    default_config = {
+      cmd = { '/home/ron/programs/drupal-lsp-rust/target/debug/drupal-lsp-rust' },
+      -- cmd = { '/home/ron/programs/drupal-lsp-rust/target/release/drupal-lsp-rust' },
+      filetypes = { 'php', 'yaml', 'yml' },
+      autostart = true,
+      root_dir = function(fname)
+        return require("lspconfig").util.root_pattern('.git')(fname)
+      end
+    },
+  }
+end
+if not configs.gleam then
+  configs.gleam = {
+    default_config = {
+      -- on_attach = function(client, bufnr)
+      --   client.server_capabilities.offsetEncoding = { "utf-16" }
+      -- end,
+      -- cmd = { '/home/ron/programs/gleam/target/debug/gleam', "lsp" },
+      cmd = { 'gleam', "lsp" },
+      args = 'lsp',
+      filetypes = { 'gleam' },
+      autostart = true,
+      root_dir = function(fname)
+        return require("lspconfig").util.root_pattern('.git')(fname)
+      end
+    },
+  }
+end
+
+require("lspconfig").tsserver.setup {
+  init_options = {
+    plugins = {
+      {
+        name = '@vue/typescript-plugin',
+        location = "/usr/local/lib/node_modules/@vue/language-server/lib",
+        languages = { 'vue' },
+      },
+    },
+  },
+}
+
+require("lspconfig").volar.setup {
+  init_options = {
+    vue = {
+      hybridMode = false,
+    },
+    typescript = {
+      tsdk = '/usr/local/lib/node_modules/typescript/lib/'
+      -- Alternative location if installed as root:
+      -- tsdk = '/usr/local/lib/node_modules/typescript/lib'
+    }
+  },
+}
+
 
 lsp_zero.setup()
 require("lspconfig").drupal.setup { autostart = true }
 require("lspconfig").custom_scss.setup { autostart = true }
--- require("lspconfig").my_scss_lsp.setup { autostart = true }
+-- require("lspconfig").drupal_go_lsp.setup { autostart = true }
+require("lspconfig").drupal_rust_lsp.setup { autostart = true }
+require("lspconfig").gleam.setup { autostart = true }
 
 vim.diagnostic.config({
   virtual_text = true,

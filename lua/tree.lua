@@ -48,7 +48,7 @@ require("nvim-tree").setup({
         { key = "R", action = "rename" },
         { key = "e", action = "edit" },
         { key = "%", action = "create" },
-        { key = "G", action = "toggle_git_ignored" },
+        { key = "h", action = "toggle_git_ignored" },
         { key = "d", action = "trash" },
         { key = "D", action = "remove" },
         { key = "v", action = "toggle_mark" },

@@ -8,19 +8,12 @@ require("custom_commands")
 require("lsp_conf")
 require("keybinds")
 require("custom_dap")
--- require'nvim-web-devicons'.setup()
--- vim.cmd[[colorscheme catppuccin-mocha]]
+require("custom_snippets")
+require("diff-split-window").setup()
+require("lando-db-interaction").setup()
+require("preload-google-fonts").setup()
+require("show-diff-of-changed-text").setup()
 
--- vim.cmd([[highlight HighlightedLineNr1 guifg=Yellow ctermfg=3]])
--- vim.cmd([[highlight HighlightedLineNr2 guifg=Green ctermfg=2]])
--- vim.cmd([[highlight HighlightedLineNr3 guifg=Cyan ctermfg=6]])
--- vim.cmd([[highlight HighlightedLineNr4 guifg=Blue ctermfg=4]])
--- vim.cmd([[highlight HighlightedLineNr5 guifg=Magenta ctermfg=5]])
--- vim.cmd([[highlight HighlightedLineNr5 guifg=Magenta ctermfg=5]])
--- vim.cmd([[highlight HighlightedLineNr4 guifg=Blue ctermfg=4]])
---
--- local mason = require ("mason-registry")
--- mason.get_package("stylint").get_install_path
 local util = require "formatter.util"
 require("formatter").setup {
   -- Enable or disable logging
@@ -47,8 +40,7 @@ require("formatter").setup {
   }
 }
 
-
-require("custom_snippets")
+-- what does this do
 vim.cmd([[
   augroup FormatAutogroup
     autocmd!

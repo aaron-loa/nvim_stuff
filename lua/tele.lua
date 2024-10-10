@@ -1,8 +1,30 @@
 local builtin = require('telescope.builtin')
+local action_state = require("telescope.actions.state")
+local helpers = require("telescope-live-grep-args.helpers")
+local actions = require("telescope.actions")
+
+---@param flag string spaces are included automatically
+local function append_to_prompt(flag, post_cmd, restore_cursor)
+  return function(prompt_bufnr)
+    local picker = action_state.get_current_picker(prompt_bufnr)
+    local prompt = picker:_get_prompt()
+    local winnr = vim.api.nvim_get_current_win()
+    local pos = vim.fn.getcurpos(winnr)[3] - 3
+    prompt = prompt .. " " .. flag
+    picker:set_prompt(prompt)
+    local new_pos = vim.fn.getcurpos(winnr)[3] - 3
+
+    if post_cmd ~= nil then
+      vim.cmd(post_cmd)
+    end
+
+    if restore_cursor == true then
+      vim.cmd("normal! " .. new_pos - pos .. "h")
+    end
+  end
+end
 
 local function find_directory_and_focus()
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
   local function open_nvim_tree(prompt_bufnr, _)
     actions.select_default:replace(function()
       local api = require("nvim-tree.api")
@@ -56,3 +78,33 @@ vim.keymap.set('n', '<leader>fe', find_directory_and_focus, {})
 vim.keymap.set('n', '<leader>fs', function()
   builtin.grep_string({ search = vim.fn.input("Grep > ") })
 end)
+
+require("telescope").setup({
+  extensions = {
+    live_grep_args = {
+      auto_quoting = false, -- enable/disable auto-quoting
+    }
+  },
+  pickers = {
+    colorscheme = {
+      enable_preview = true,
+    },
+  },
+  defaults = {
+    mappings = {
+      i = {
+        ["<c-q>"] = require("trouble.sources.telescope").open,
+        ["<c-t>"] = append_to_prompt("-t "),
+        ["<c-i>"] = append_to_prompt("--no-ignore", nil, true),
+        ["<c-g>"] = append_to_prompt("--iglob '!'", "normal! hh")
+      },
+      n = { ["<c-q>"] = require("trouble.sources.telescope").open },
+    },
+    file_ignore_patterns = { "node_modules", ".sql" }
+  },
+})
+
+require("telescope").load_extension("live_grep_args")
+require("telescope").load_extension("neoclip")
+-- require("telescope").load_extension("macroscope")
+require("telescope").load_extension("aerial")

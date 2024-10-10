@@ -1,3 +1,4 @@
+require("plenary.reload").reload_module("")
 local M = {}
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"

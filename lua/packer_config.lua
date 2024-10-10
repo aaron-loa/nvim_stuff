@@ -253,7 +253,7 @@ require("lazy").setup({
     config = function()
       require("aerial").setup(
         {
-          backends = { "treesitter", "lsp", "markdown", "man" },
+          backends = { "treesitter", "lsp", "man" },
         })
     end,
   },
@@ -269,13 +269,19 @@ require("lazy").setup({
     end,
   },
   {
-    "rmagatti/goto-preview", -- preview definition
+    "rmagatti/goto-preview", -- preview definition,
     event = "VeryLazy",      -- TODO  make gd always open with goto-preview if the function is a non git file
     config = function()
       require("goto-preview").setup({
         width = 100,
         height = 70,
         default_mappings = true,
+        post_open_hook = function(buffer, _)
+          -- Vert split/Move to right
+          vim.cmd("wincmd L")
+          vim.api.nvim_buf_set_keymap(buffer, "n", "gd", ":lua vim.lsp.buf.definition()<CR>",
+            { noremap = true, silent = true })
+        end,
       })
     end,
   },
@@ -331,38 +337,7 @@ require("gitsigns").setup()
 require("lualine").setup({})
 require("treesitter-context").setup()
 require('dapui').setup()
-require("telescope").load_extension("live_grep_args")
-require("telescope").load_extension("neoclip")
--- require("telescope").load_extension("macroscope")
-require("telescope").load_extension("aerial")
 require 'lsp_signature'.setup()
-
-local trouble = require("trouble.providers.telescope")
-local lga_actions = require("telescope-live-grep-args.actions")
-
-require("telescope").setup({
-  extensions = {
-    live_grep_args = {
-      auto_quoting = false, -- enable/disable auto-quoting
-    }
-  },
-  pickers = {
-    colorscheme = {
-      enable_preview = true,
-    },
-  },
-  defaults = {
-    mappings = {
-      i = {
-        ["<c-q>"] = require("trouble.sources.telescope").open,
-        ["<c-t>"] = lga_actions.quote_prompt({ postfix = " -t " }),
-        ["<c-k>"] = lga_actions.quote_prompt()
-      },
-      n = { ["<c-q>"] = require("trouble.sources.telescope").open },
-    },
-    file_ignore_patterns = { "node_modules", ".sql" }
-  },
-})
 
 require("colorizer").setup()
 require("nvim-lastplace").setup({})

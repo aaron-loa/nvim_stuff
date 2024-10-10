@@ -22,7 +22,23 @@ vim.keymap.set("n", "<leader>pv", ":ProjectView <CR>", { silent = true })      -
 vim.keymap.set("n", "<leader>fp", ":Telescope resume <CR>", { silent = true }) -- custom command
 vim.keymap.set("n", "<leader>r", ":NvimTreeFindFile<CR>", { silent = true })
 vim.keymap.set("n", "<leader>fT", ":Telescope lsp_workspace_symbols <CR>", { silent = true })
+
+
+-- vim.keymap.set('n', '<Leader>df', function()
+--   local widgets = require('dap.ui.widgets')
+--   widgets.centered_float(widgets.frames)
+-- end)
+
 vim.keymap.set("n", "<leader>k", require('dap.ui.widgets').hover, { silent = true })
+vim.keymap.set("n", "<leader>dp", require('dap.ui.widgets').preview, { silent = true })
+
+vim.keymap.set('n', 'ű', function() require('dap').continue() end)
+vim.keymap.set('n', 'ő', function() require('dap').terminate() end)
+vim.keymap.set('n', 'á', function() require('dap').step_over() end)
+vim.keymap.set('n', 'ü', function() require('dap').step_into() end)
+vim.keymap.set('n', 'ó', function() require('dap').step_out() end)
+vim.keymap.set('n', 'ú', function() require('dap').run_last() end)
+
 vim.keymap.set("n", "<leader>sf", query_word_under_cursor, { silent = true })
 
 vim.keymap.set("n", "<leader>r", ":NvimTreeFindFile<CR>", { silent = true })
@@ -30,18 +46,18 @@ vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><
 vim.keymap.set("v", "<leader>s", [[:s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 
-vim.keymap.set("n", "<leader>tp", [[:TroubleToggle telescope <CR>]], { silent = true })
-vim.keymap.set("n", "<leader>tq", [[:TroubleToggle quickfix <CR>]], { silent = true })
-vim.keymap.set("n", "<leader>tt", [[:TroubleToggle workspace_diagnostics <CR>]], { silent = true })
+vim.keymap.set("n", "<leader>tp", [[:Trouble telescope <CR>]], { silent = true })
+vim.keymap.set("n", "<leader>tq", [[:Trouble quickfix <CR>]], { silent = true })
+vim.keymap.set("n", "<leader>tt", [[:Trouble diagnostics <CR>]], { silent = true })
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
-vim.keymap.set("n", "<leader>dr", ":lua require('builder').setup()<CR>", { silent = true })
+-- vim.keymap.set("n", "<leader>dr", ":lua require('builder').setup()<CR>", { silent = true })
 vim.keymap.set("n", ">", ">>", { silent = true })
 vim.keymap.set("n", "x", [[v"_d]]) -- remove single character and put it in void register
 vim.keymap.set("n", "zz", "zz zH") -- center cursor
 vim.keymap.set("n", "ZZ", ":qa!<CR>")
 
 
-vim.keymap.set("n", "mg", "`")                   -- reasonable marks
+vim.keymap.set("n", "mg", "`") -- reasonable marks
 
 vim.keymap.set("v", ">", ">gv", { silent = true })
 vim.keymap.set("v", "<", "<gv", { silent = true })

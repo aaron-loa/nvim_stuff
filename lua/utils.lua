@@ -42,7 +42,7 @@ function M.CustomGoToDefinition()
       local current_buffer_path = vim.api.nvim_buf_get_name(0)
       if path_of_definition ~= current_buffer_path then
         -- TODO possibly only do this if file is in gitignore? needs testing
-        require('goto-preview').goto_preview_definition({})
+        require('goto-preview').goto_preview_definition()
         return
       else
         vim.lsp.buf.definition({})

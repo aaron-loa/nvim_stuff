@@ -83,6 +83,10 @@ vim.api.nvim_create_user_command("E", function()
   vim.cmd([[edit]])
 end, {})
 
+vim.api.nvim_create_user_command("So", function()
+  vim.cmd([[source]])
+end, {})
+
 
 vim.api.nvim_create_user_command("SortDeclarations", function()
   local bufnr = vim.api.nvim_get_current_buf()

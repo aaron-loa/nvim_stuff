@@ -33,8 +33,8 @@ dap.configurations.cpp = {
     type = "codelldb",
     request = "launch",
     program = function()
-      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-    end ,
+      return require("dap.utils").pick_file()
+    end,
     cwd = '${workspaceFolder}',
     stopOnEntry = false,
   },
@@ -73,9 +73,7 @@ vim.api.nvim_create_autocmd({ "VimLeavePre" }, {
   group = "CustomDap",
   callback = function()
     for _, layout in ipairs(dapui_windows.layouts) do
-      for _, win in ipairs(layout.opened_wins) do
-        -- if a windows is open close everything
-        -- this helps with session manager plugins
+      if layout:is_open() then
         dapui.close()
         break
       end
