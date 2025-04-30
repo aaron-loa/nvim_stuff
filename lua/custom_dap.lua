@@ -4,14 +4,12 @@ local dapui_windows = require('dapui.windows')
 local dapui = require('dapui')
 local dap = require('dap')
 
-local pickers = require("telescope.pickers")
-local finders = require("telescope.finders")
-local conf = require("telescope.config").values
+vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpointColor', linehl = '', numhl = '' })
+vim.fn.sign_define('DapBreakpointRejected',
+  { text = '', texthl = 'DapBreakpointRejectedColor', linehl = '', numhl = '' })
 
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-local cached_result = ""
-
+vim.cmd [[highlight DapBreakpointColor guifg=#FF5F5F guibg=NULL]]
+vim.cmd [[highlight DapBreakpointRejectedColor guifg=#fff guibg=NULL]]
 
 vim.keymap.set('n', '<F6>', ':lua require("custom_dap").get_data()<CR>', { noremap = true, silent = true })
 
@@ -57,8 +55,8 @@ dap.configurations.php = {
     port = "9003",
     log = false,
     pathMappings = {
-      -- TODO automatize this
       ["/app/"] = "${workspaceFolder}/", -- drupal
+      ["/app"] = "${workspaceFolder}/",  -- drupal
       -- ["/application/"] = "${workspaceFolder}/" -- docker
     },
     console = 'integratedTerminal'

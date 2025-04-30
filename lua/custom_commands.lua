@@ -96,10 +96,17 @@ vim.api.nvim_create_user_command("SortDeclarations", function()
   end
   local get_root = function(bufnumber)
     local parser = vim.treesitter.get_parser(bufnumber, "scss", {})
+    if not parser then
+      return nil
+    end
     local tree = parser:parse()[1]
     return tree:root()
   end
   local root = get_root(bufnr)
+  if not root then
+    vim.notify("No treesitter parser found for this buffer", vim.log.levels.WARN)
+    return
+  end
   local declarations = vim.treesitter.query.parse(
     "scss",
     [[
@@ -156,48 +163,6 @@ vim.api.nvim_create_user_command("SortDeclarations", function()
     end
     vim.api.nvim_buf_set_lines(bufnr, v["start"], v["end"] + 1, false, change)
   end
-end, {})
-
-local data = vim.api.nvim_command_output(":!pv_list")
-data = vim.split(data, "\n")
-
-local pickers = require("telescope.pickers")
-local finders = require("telescope.finders")
-local conf = require("telescope.config").values
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-
-local paths = function(opts)
-  opts = opts or {}
-  pickers
-      .new(opts, {
-        prompt_title = "project",
-        finder = finders.new_table({
-          results = { unpack(data, 4, #data) },
-        }),
-        sorter = conf.generic_sorter(opts),
-        attach_mappings = function(prompt_bufnr, map)
-          actions.select_default:replace(function()
-            actions.close(prompt_bufnr)
-            local bufnr = vim.api.nvim_get_current_buf()
-            local selection = action_state.get_selected_entry()
-            vim.api.nvim_exec(
-              string.format(
-                ":terminal nohup alacritty --working-directory %s --command nvim >> /dev/null",
-                selection[1]
-              ),
-              true
-            )
-            vim.api.nvim_set_current_buf(bufnr)
-          end)
-          return true
-        end,
-      })
-      :find()
-end
-
-vim.api.nvim_create_user_command("ProjectView", function()
-  paths()
 end, {})
 
 return M

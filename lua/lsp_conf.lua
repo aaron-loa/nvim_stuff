@@ -1,6 +1,6 @@
 local lsp_zero = require("lsp-zero")
 
-require('mason').setup({})
+require('mason').setup()
 require('mason-lspconfig').setup({
   ensure_installed = {},
   handlers = {
@@ -8,18 +8,20 @@ require('mason-lspconfig').setup({
   },
 })
 
-lsp_zero.on_attach(function(client, bufnr)
+lsp_zero.on_attach(function(_, bufnr)
   local opts = { buffer = bufnr, remap = false }
   vim.keymap.set("n", "gn", function()
-    vim.diagnostic.goto_next()
+    vim.diagnostic.jump({ count = 1 })
   end, opts)
   vim.keymap.set("n", "gb", function()
-    vim.diagnostic.goto_prev()
+    vim.diagnostic.jump({ count = -1 })
   end, opts)
-  vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-  vim.keymap.set("i", "<C-n>", function() vim.lsp.buf.completion({}) end)
+  vim.keymap.set('n', 'K', function()
+    vim.lsp.buf.hover()
+  end, opts)
+
   vim.keymap.set("n", "gd", function() require("utils").CustomGoToDefinition() end)
-  vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end)
+  vim.keymap.set('n', 'K', function() vim.lsp.buf.hover({ focusable = true, border = {"single", "solid"} }) end)
   vim.keymap.set('n', 'gD', function() vim.lsp.buf.definition() end)
   vim.keymap.set('n', '<leader>gd', function() vim.lsp.buf.declaration() end)
   vim.keymap.set('n', 'gi', function() vim.lsp.buf.implementation() end)
@@ -35,7 +37,7 @@ end)
 local configs = require 'lspconfig.configs'
 
 require("lspconfig").clangd.setup({
-  on_attach = function(client, bufnr)
+  on_attach = function(client, _)
     client.server_capabilities.offsetEncoding = { "utf-8" }
   end,
   cmd = { "clangd", "--offset-encoding=utf-16" }
@@ -47,20 +49,20 @@ require("lspconfig").clangd.setup({
 
 
 require("lspconfig").cssls.setup({
-  on_attach = function(client, bufnr)
+  on_attach = function(client, _)
     client.server_capabilities.documentSymbolProvider = nil
     client.server_capabilities.workspaceSymbolProvider = nil
     client.server_capabilities.referencesProvider = nil
   end,
 })
 
-require("lspconfig").tailwindcss.setup({
-  on_attach = function(client, bufnr)
-    client.server_capabilities.documentSymbolProvider = nil
-    client.server_capabilities.workspaceSymbolProvider = nil
-    client.server_capabilities.referencesProvider = nil
-  end,
-})
+-- require("lspconfig").tailwindcss.setup({
+--   on_attach = function(client, bufnr)
+--     client.server_capabilities.documentSymbolProvider = nil
+--     client.server_capabilities.workspaceSymbolProvider = nil
+--     client.server_capabilities.referencesProvider = nil
+--   end,
+-- })
 
 require("lspconfig").intelephense.setup({
   filetypes = { "php", "inc", "module", "yml", "install", "phtml", "theme" },
@@ -134,8 +136,8 @@ if not configs.gleam then
       -- on_attach = function(client, bufnr)
       --   client.server_capabilities.offsetEncoding = { "utf-16" }
       -- end,
-      -- cmd = { '/home/ron/programs/gleam/target/debug/gleam', "lsp" },
-      cmd = { 'gleam', "lsp" },
+      cmd = { '/home/ron/programs/gleam/target/debug/gleam', "lsp" },
+      -- cmd = { 'gleam', "lsp" },
       args = 'lsp',
       filetypes = { 'gleam' },
       autostart = true,
@@ -146,17 +148,17 @@ if not configs.gleam then
   }
 end
 
-require("lspconfig").tsserver.setup {
-  init_options = {
-    plugins = {
-      {
-        name = '@vue/typescript-plugin',
-        location = "/usr/local/lib/node_modules/@vue/language-server/lib",
-        languages = { 'vue' },
-      },
-    },
-  },
-}
+-- require("lspconfig").tsserver.setup {
+--   init_options = {
+--     plugins = {
+--       {
+--         name = '@vue/typescript-plugin',
+--         location = "/usr/local/lib/node_modules/@vue/language-server/lib",
+--         languages = { 'vue' },
+--       },
+--     },
+--   },
+-- }
 
 require("lspconfig").volar.setup {
   init_options = {
@@ -176,7 +178,7 @@ lsp_zero.setup()
 require("lspconfig").drupal.setup { autostart = true }
 require("lspconfig").custom_scss.setup { autostart = true }
 -- require("lspconfig").drupal_go_lsp.setup { autostart = true }
-require("lspconfig").drupal_rust_lsp.setup { autostart = true }
+-- require("lspconfig").drupal_rust_lsp.setup { autostart = true }
 require("lspconfig").gleam.setup { autostart = true }
 
 vim.diagnostic.config({

@@ -137,7 +137,6 @@ end
 M.clean_string = function(str)
   str = string.gsub(str, [["]], "")
   str = string.gsub(str, [[']], "")
-  str = string.gsub(str, [[-]], "_")
   return str
 end
 
@@ -183,18 +182,16 @@ M.parse = function(bufnr)
       text_value = M.clean_string(text_value)
       current_match[capture_name] = text_value
     end
+    print(current_match)
     -- techinically the query should guarantee these i think
     assert(current_match.url, "No url found")
     assert(current_match.format, "No format found")
-    assert(current_match.font_weight, "No font weight found")
-    assert(current_match.font_family, "No font family found")
-    assert(current_match.character_set_in_comment, "no character_set_in_comment")
 
-    new_match:set_url(current_match.url)
-    new_match:set_font_family(current_match.font_family)
-    new_match:set_font_format(current_match.format)
-    new_match:add_font_weight(current_match.font_weight)
-    new_match:add_character_set(current_match.character_set_in_comment)
+    new_match:set_url(current_match["url"])
+    new_match:set_font_family(current_match["font_family"])
+    new_match:set_font_format(current_match["format"])
+    new_match:add_font_weight(current_match["font-weight"])
+    new_match:add_character_set(current_match["character_set_in_comment"])
     all_matches[#all_matches + 1] = new_match
   end
 

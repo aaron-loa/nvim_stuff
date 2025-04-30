@@ -1,4 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -12,6 +13,21 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+  {
+    -- https://github.com/rmagatti/auto-session
+    'rmagatti/auto-session',
+    init = function()
+      require("auto-session").setup {
+        auto_session_enabled = true,
+        log_level = "error",
+        cwd_change_handling = {
+          post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
+            require("lualine").refresh()     -- refresh lualine so the new session name is displayed in the status bar
+          end,
+        },
+      }
+    end
+  },
   {
     "mhartington/formatter.nvim",
     event = "VeryLazy",
@@ -35,7 +51,7 @@ require("lazy").setup({
     -- follow latest release.
     version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!:).
-    dependencies = { "rafamadriz/friendly-snippets" },
+    hependencies = { "rafamadriz/friendly-snippets" },
     build = "make install_jsregexp",
     lazy = false,
     priority = 1000,
@@ -57,21 +73,6 @@ require("lazy").setup({
   },
   "ethanholz/nvim-lastplace", -- good stuff
   {
-    -- https://github.com/rmagatti/auto-session
-    'rmagatti/auto-session',
-    init = function()
-      require("auto-session").setup {
-        auto_session_enabled = true,
-        log_level = "error",
-        cwd_change_handling = {
-          post_cwd_changed_hook = function() -- example refreshing the lualine status line _after_ the cwd changes
-            require("lualine").refresh()     -- refresh lualine so the new session name is displayed in the status bar
-          end,
-        },
-      }
-    end
-  },
-  {
     "rebelot/kanagawa.nvim",
     config = function()
     end,
@@ -82,60 +83,165 @@ require("lazy").setup({
     priority = 2000,
   },
   {
+    'saghen/blink.cmp',
+    -- optional: provides snippets for the snippet source
+    dependencies = { 'rafamadriz/friendly-snippets' },
+
+    -- use a release tag to download pre-built binaries
+    version = '1.*',
+    -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+    -- build = 'cargo build --release',
+    -- If you use nix, you can build from source using latest nightly rust with:
+    -- build = 'nix run .#build-plugin',
+
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+
+    opts = {
+      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+      -- 'super-tab' for mappings similar to vscode (tab to accept)
+      -- 'enter' for enter to accept
+      -- 'none' for no mappings
+      --
+      -- All presets have the following mappings:
+      -- C-space: Open menu or open docs if already open
+      -- C-n/C-p or Up/Down: Select next/previous item
+      -- C-e: Hide menu
+      -- C-k: Toggle signature help (if signature.enabled = true)
+      --
+      -- See :h blink-cmp-config-keymap for defining your own keymap
+      keymap = {
+        preset = 'default',
+        ['<C-space>'] = { function(cmp) cmp.show({ providers = { 'snippets', 'lsp' } }) end },
+        ['<C-m>'] = { "cancel" },
+        ['<C-z>'] = { function(cmp) cmp.accept() end },
+      },
+
+      appearance = {
+        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = 'mono'
+      },
+      -- (Default) Only show the documentation popup when manually triggered
+      completion = {
+        documentation = { auto_show = true },
+        list = {
+          selection = {
+            auto_insert = true
+          }
+        },
+        menu = {
+          draw = {
+            components = {
+              kind_icon = {
+                text = function(ctx)
+                  local lspkind = require("lspkind")
+                  local icon = ctx.kind_icon
+                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
+                    local dev_icon, _ = require("nvim-web-devicons").get_icon(ctx.label)
+                    if dev_icon then
+                      icon = dev_icon
+                    end
+                  else
+                    icon = require("lspkind").symbolic(ctx.kind, {
+                      mode = "symbol",
+                    })
+                  end
+
+                  return icon .. ctx.icon_gap
+                end,
+
+                -- Optionally, use the highlight groups from nvim-web-devicons
+                -- You can also add the same function for `kind.highlight` if you want to
+                -- keep the highlight groups in sync with the icons.
+                highlight = function(ctx)
+                  local hl = ctx.kind_hl
+                  if vim.tbl_contains({ "Path" }, ctx.source_name) then
+                    local dev_icon, dev_hl = require("nvim-web-devicons").get_icon(ctx.label)
+                    if dev_icon then
+                      hl = dev_hl
+                    end
+                  end
+                  return hl
+                end,
+              }
+            }
+          }
+        }
+      },
+
+      -- Default list of enabled providers defined so that you can extend it
+      -- elsewhere in your config, without redefining it, due to `opts_extend`
+      sources = {
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
+      },
+
+      -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+      -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
+      -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
+      --
+      -- See the fuzzy documentation for more information
+      fuzzy = { implementation = "rust" }
+
+    },
+    opts_extend = { "sources.default" }
+
+  },
+  {
     "folke/tokyonight.nvim",
     lazy = true,
   },
-  {
-    "hrsh7th/nvim-cmp",
-    config = function()
-      local cmp = require 'cmp'
-      local compare = require('cmp.config.compare')
-      local mapping = require('cmp.config.mapping')
-      local types = require('cmp.types')
-      cmp.setup {
-        snippet = {
-          expand = function(args)
-            require('luasnip').lsp_expand(args.body)
-          end,
-        },
-        mapping = {
-          ['<C-n>'] = mapping(mapping.select_next_item({ behavior = types.cmp.SelectBehavior.Insert }), { 'i', 'c' }),
-          ['<C-p>'] = mapping(mapping.select_prev_item({ behavior = types.cmp.SelectBehavior.Insert }), { 'i', 'c' }),
-          ['<C-y>'] = mapping.confirm({ select = false }),
-          ['<C-z>'] = mapping.confirm({ select = false }),
-          --   ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-          --   ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-          --   ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-          --   ['<C-u>'] = cmp.mapping.scroll_docs(4),
-          --   ['<C-z>'] = cmp.mapping.complete(),
-          -- --   ['<C-e>'] = cmp.mapping.close(),
-          --   -- ['<C-z>'] = cmp.mapping.confirm({ select = true }),
-          -- --   ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
-          -- --   ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
-        },
-        sources = {
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'buffer' },
-          { name = 'path' },
-          { name = 'nvim_lua' },
-          {
-            name = "lazydev",
-            group_index = 0,
-          }
-        }
-      }
-    end,
-    dependencies = {
-      "hrsh7th/cmp-buffer",       -- Completion source
-      "hrsh7th/cmp-nvim-lsp",     -- Completion source
-      "hrsh7th/cmp-path",         -- Completion source
-      "hrsh7th/cmp-nvim-lua",     -- Completion source
-      "saadparwaiz1/cmp_luasnip", -- Completion source
-    },
-    priority = 800,
-    lazy = false
-  }, -- Autocomplete engine
+  -- {
+  --   "hrsh7th/nvim-cmp",
+  --   config = function()
+  --     local cmp = require 'cmp'
+  --     local compare = require('cmp.config.compare')
+  --     local mapping = require('cmp.config.mapping')
+  --     local types = require('cmp.types')
+  --     cmp.setup {
+  --       snippet = {
+  --         expand = function(args)
+  --           require('luasnip').lsp_expand(args.body)
+  --         end,
+  --       },
+  --       mapping = {
+  --         ['<C-n>'] = mapping(mapping.select_next_item({ behavior = types.cmp.SelectBehavior.Insert }), { 'i', 'c' }),
+  --         ['<C-p>'] = mapping(mapping.select_prev_item({ behavior = types.cmp.SelectBehavior.Insert }), { 'i', 'c' }),
+  --         ['<C-y>'] = mapping.confirm({ select = false }),
+  --         ['<C-z>'] = mapping.confirm({ select = false }),
+  --         --   ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+  --         --   ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+  --         --   ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+  --         --   ['<C-u>'] = cmp.mapping.scroll_docs(4),
+  --         --   ['<C-z>'] = cmp.mapping.complete(),
+  --         -- --   ['<C-e>'] = cmp.mapping.close(),
+  --         --   -- ['<C-z>'] = cmp.mapping.confirm({ select = true }),
+  --         -- --   ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+  --         -- --   ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+  --       },
+  --       sources = {
+  --         { name = 'nvim_lsp' },
+  --         { name = 'luasnip' },
+  --         { name = 'buffer' },
+  --         { name = 'path' },
+  --         { name = 'nvim_lua' },
+  --         {
+  --           name = "lazydev",
+  --           group_index = 0,
+  --         }
+  --       }
+  --     }
+  --   end,
+  --   dependencies = {
+  --     "hrsh7th/cmp-buffer",       -- Completion source
+  --     "hrsh7th/cmp-nvim-lsp",     -- Completion source
+  --     "hrsh7th/cmp-path",         -- Completion source
+  --     "hrsh7th/cmp-nvim-lua",     -- Completion source
+  --     "saadparwaiz1/cmp_luasnip", -- Completion source
+  --   },
+  --   priority = 800,
+  --   lazy = false
+  -- }, -- Autocomplete engine
   {
     "NeogitOrg/neogit",
     event = "VeryLazy",
@@ -184,7 +290,14 @@ require("lazy").setup({
   "norcalli/nvim-colorizer.lua",
   "nvim-treesitter/nvim-treesitter-context",
   "nvim-treesitter/playground",
-  "saadparwaiz1/cmp_luasnip", -- Completion source
+  {
+    "onsails/lspkind.nvim",
+    config = function()
+      require("lspkind").init()
+    end
+  },
+  "nvim-lua/popup.nvim",
+  -- "saadparwaiz1/cmp_luasnip", -- Completion source
   {
     "numToStr/Comment.nvim",
     config = function()
@@ -228,12 +341,12 @@ require("lazy").setup({
       { "williamboman/mason-lspconfig.nvim" },
 
       -- Autocompletion
-      { "hrsh7th/nvim-cmp" },
-      { "hrsh7th/cmp-buffer" },
-      { "hrsh7th/cmp-path" },
-      { "saadparwaiz1/cmp_luasnip" },
-      { "hrsh7th/cmp-nvim-lsp" },
-      { "hrsh7th/cmp-nvim-lua" },
+      -- { "hrsh7th/nvim-cmp" },
+      -- { "hrsh7th/cmp-buffer" },
+      -- { "hrsh7th/cmp-path" },
+      -- { "saadparwaiz1/cmp_luasnip" },
+      -- { "hrsh7th/cmp-nvim-lsp" },
+      -- { "hrsh7th/cmp-nvim-lua" },
 
       -- Snippets
       { "L3MON4D3/LuaSnip" },
@@ -289,6 +402,63 @@ require("lazy").setup({
     "rcarriga/nvim-dap-ui",
     dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" }
   },
+  {
+    'leoluz/nvim-dap-go',
+    init = function()
+      require('dap-go').setup(
+        {
+          dap_configurations = {
+            {
+              -- Must be "go" or it will be ignored by the plugin
+              type = "go",
+              name = "Attach remote",
+              mode = "remote",
+              request = "attach",
+            },
+          },
+          -- delve configurations
+          delve = {
+            -- the path to the executable dlv which will be used for debugging.
+            -- by default, this is the "dlv" executable on your PATH.
+            path = "dlv",
+            -- time to wait for delve to initialize the debug session.
+            -- default to 20 seconds
+            initialize_timeout_sec = 20,
+            -- a string that defines the port to start delve debugger.
+            -- default to string "${port}" which instructs nvim-dap
+            -- to start the process in a random available port.
+            -- if you set a port in your debug configuration, its value will be
+            -- assigned dynamically.
+            port = "${port}",
+            -- additional args to pass to dlv
+            args = {},
+            -- the build flags that are passed to delve.
+            -- defaults to empty string, but can be used to provide flags
+            -- such as "-tags=unit" to make sure the test suite is
+            -- compiled during debugging, for example.
+            -- passing build flags using args is ineffective, as those are
+            -- ignored by delve in dap mode.
+            -- avaliable ui interactive function to prompt for arguments get_arguments
+            build_flags = {},
+            -- whether the dlv process to be created detached or not. there is
+            -- an issue on Windows where this needs to be set to false
+            -- otherwise the dlv server creation will fail.
+            -- avaliable ui interactive function to prompt for build flags: get_build_flags
+            detached = vim.fn.has("win32") == 0,
+            -- the current working directory to run dlv from, if other than
+            -- the current working directory.
+            cwd = nil,
+          },
+          -- options related to running closest test
+          tests = {
+            -- enables verbosity when running the test.
+            verbose = false,
+          },
+        }
+      )
+    end,
+    dependencies = { 'mfussenegger/nvim-dap' }
+  },
   { -- clipboard manager
     "AckslD/nvim-neoclip.lua",
     dependencies = {
@@ -323,16 +493,18 @@ require("lazy").setup({
     event = "VeryLazy",
     dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
-      require("trouble").setup({
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
-      })
+      require("trouble").setup(
+      -- {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      -- }
+      )
     end,
   },
 })
 
-require("neoclip").setup({ enable_persistent_history = true, default_register = "+" })
+require("neoclip").setup({ enable_persistent_history = false, default_register = "+" })
 require("gitsigns").setup()
 require("lualine").setup({})
 require("treesitter-context").setup()

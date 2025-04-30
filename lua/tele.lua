@@ -93,12 +93,12 @@ require("telescope").setup({
   defaults = {
     mappings = {
       i = {
-        ["<c-q>"] = require("trouble.sources.telescope").open,
+        ["<c-q>"] = require("telescope.actions").send_to_qflist,
         ["<c-t>"] = append_to_prompt("-t "),
         ["<c-i>"] = append_to_prompt("--no-ignore", nil, true),
         ["<c-g>"] = append_to_prompt("--iglob '!'", "normal! hh")
       },
-      n = { ["<c-q>"] = require("trouble.sources.telescope").open },
+      n = { ["<c-q>"] = require("telescope.actions").send_to_qflist },
     },
     file_ignore_patterns = { "node_modules", ".sql" }
   },
