@@ -89,7 +89,7 @@ end, { silent = true })
 -- :copilot#Accept('
 -- ')
 --
-vim.cmd([[imap <silent><script><expr> <C-Space> copilot#Accept("\<CR>")]])
+vim.cmd([[imap <silent><script><expr> <C-f> copilot#Accept("\<CR>")]])
 vim.keymap.set("i", "<C-j>", "copilot#Next()", { expr = true, silent = true })
 vim.keymap.set("i", "<C-k>", "copilot#Previous()", { expr = true, silent = true })
 vim.keymap.set("i", "<C-x>", "copilot#Dismiss()", { expr = true, silent = true })

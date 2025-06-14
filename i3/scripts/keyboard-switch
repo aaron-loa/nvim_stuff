@@ -1,0 +1,10 @@
+#!/bin/bash
+out=$(setxkbmap -query | grep layout)
+regex="\s*(\S*)$"
+
+if [[ $out =~ $regex ]]
+    then
+        echo "${BASH_REMATCH[1]}"
+    else
+        echo "??"
+fi

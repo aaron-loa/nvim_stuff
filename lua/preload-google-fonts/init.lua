@@ -174,6 +174,9 @@ M.parse = function(bufnr)
     local new_match = Match.new()
 
     for id, node in ipairs(match) do
+      if node == nil then
+        goto continue
+      end
       local capture_name = query.captures[id]
       --- @type TSNode
       node = node
@@ -181,6 +184,7 @@ M.parse = function(bufnr)
       local text_value = vim.treesitter.get_node_text(node, bufnr)
       text_value = M.clean_string(text_value)
       current_match[capture_name] = text_value
+      ::continue::
     end
     print(current_match)
     -- techinically the query should guarantee these i think
@@ -210,9 +214,9 @@ M.procedure = function(url)
   local temp_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(temp_buf, -1, -1, false, vim.split(response, "\n"))
   vim.bo[temp_buf].filetype = "scss"
-  -- vim.api.nvim_open_win(temp_buf, true, {
-  --   split = "right",
-  -- })
+  vim.api.nvim_open_win(temp_buf, true, {
+    split = "right",
+  })
 
   local parsed_info = M.parse(temp_buf)
   local grouped = M.group_by_url(parsed_info)

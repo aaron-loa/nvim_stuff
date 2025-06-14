@@ -54,10 +54,10 @@ require("lazy").setup({
     hependencies = { "rafamadriz/friendly-snippets" },
     build = "make install_jsregexp",
     lazy = false,
-    priority = 1000,
+    priority = 2,
     init = function()
-      require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./drupal-smart-snippets" } })
       require("luasnip.loaders.from_vscode").lazy_load()
+      require("luasnip.loaders.from_vscode").lazy_load({ paths = { "./drupal-smart-snippets" } })
       require("luasnip.loaders.from_snipmate").lazy_load()
     end,
   },
@@ -85,7 +85,10 @@ require("lazy").setup({
   {
     'saghen/blink.cmp',
     -- optional: provides snippets for the snippet source
-    dependencies = { 'rafamadriz/friendly-snippets' },
+    dependencies = {
+      'rafamadriz/friendly-snippets',
+      { 'L3MON4D3/LuaSnip', version = 'v2.*' },
+    },
 
     -- use a release tag to download pre-built binaries
     version = '1.*',
@@ -96,7 +99,6 @@ require("lazy").setup({
 
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
-
     opts = {
       -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
       -- 'super-tab' for mappings similar to vscode (tab to accept)
@@ -110,10 +112,14 @@ require("lazy").setup({
       -- C-k: Toggle signature help (if signature.enabled = true)
       --
       -- See :h blink-cmp-config-keymap for defining your own keymap
+      --
+      snippets = {
+        preset = "luasnip",
+      },
       keymap = {
         preset = 'default',
-        ['<C-space>'] = { function(cmp) cmp.show({ providers = { 'snippets', 'lsp' } }) end },
-        ['<C-m>'] = { "cancel" },
+        -- ['<C-f>'] = { function(cmp) cmp.show({ providers = { 'snippets', 'lsp' } }) end },
+        ['<C-,>'] = { "cancel" },
         ['<C-z>'] = { function(cmp) cmp.accept() end },
       },
 
@@ -184,8 +190,8 @@ require("lazy").setup({
       fuzzy = { implementation = "rust" }
 
     },
-    opts_extend = { "sources.default" }
-
+    opts_extend = { "sources.default" },
+    priority = 3,
   },
   {
     "folke/tokyonight.nvim",
