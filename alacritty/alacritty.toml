@@ -1,0 +1,38 @@
+
+[colors.hints.end]
+background = "#3388ff"
+foreground = "#0000ff"
+
+[colors.hints.start]
+background = "#FF0000"
+foreground = "#FFFFFF"
+
+[colors.primary]
+background = "#08052b"
+bright_foreground = "#D4D4D4"
+foreground = "#DDDDDD"
+
+[font]
+size = 8.5
+
+[font.normal]
+family = "NotoMono Nerd Font Mono"
+
+[font.offset]
+x = 0
+y = 4
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "Return"
+mods = "Control|Shift"
+
+[window]
+dynamic_padding = true
+
+[window.padding]
+x = 0
+y = 1
+
+[general]
+live_config_reload = true
