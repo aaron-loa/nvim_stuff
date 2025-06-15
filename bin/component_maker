@@ -1,0 +1,89 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import pyperclip
+import subprocess
+import re
+
+theme_name = ""
+
+def find_git_folder():
+    current = os.getcwd()
+    dirs = os.listdir()
+    if current == "/":
+        return False
+
+    find_theme_name()
+    for dir in dirs:
+        if dir == ".git":
+            return True
+    else:
+        os.chdir("../")
+        return find_git_folder()
+
+def find_theme_name():
+    global theme_name
+    if theme_name != "":
+        return
+    files = os.listdir(os.getcwd())
+    for file in files:
+        res = re.search(r"(\w+)\.info\.yml", file)
+        if res:
+            theme_name = res.group(1)
+            return res.group(1)
+
+def make_component(component_name, path, template):
+    component_path = path+component_name
+    os.mkdir(component_path)
+
+    with open(component_path+"/"+component_name+".twig", "x") as f:
+        f.write("{{ attach_library('"+theme_name+"/" + component_name + "') }}\n")
+        with open(template, "r") as template_file:
+            f.write(template_file.read())
+
+    with open(component_path + "/" + component_name + ".scss", "x") as f:
+        f.write("")
+
+
+template_file_name = pyperclip.paste().strip()
+
+if template_file_name == "":
+    print("No template file name in clipboard")
+    sys.exit()
+
+if not find_git_folder():
+    print("Can't find git folder")
+    sys.exit()
+
+if theme_name == "":
+    print("Can't find theme name")
+    sys.exit()
+
+print(f"Theme name: {theme_name}")
+print(f"Template file name: {template_file_name}\n")
+
+print("This component:")
+component_name = input()
+
+print("In this component folder:")
+component_folder_path = subprocess.check_output(
+    "fd -t directory | fzf --query 'src/components' --height 40%", shell=True).decode("utf-8").strip()
+print(component_folder_path)
+
+print("With this template:")
+base_template = subprocess.check_output(
+    "fd --no-ignore -e twig | fzf --query 'radix' --height 40% --preview 'bat -n --color=always {}'", shell=True).decode("utf-8").strip()
+print(base_template)
+
+print("Include this component this template folder:")
+
+template_folder = subprocess.check_output(
+    "fd -t directory | fzf --query 'template' --height 40%", shell=True).decode("utf-8").strip()
+
+
+print(template_folder+template_file_name)
+
+make_component(component_name, component_folder_path, base_template)
+with open(template_folder+"/"+template_file_name, "x") as f:
+    f.write("{% include '@"+theme_name+"/"+component_name+"/"+component_name+".twig'%}")

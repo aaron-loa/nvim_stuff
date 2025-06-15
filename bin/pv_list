@@ -1,0 +1,13 @@
+#!/bin/bash
+
+items=""
+items="${items} /home/ron/.config/i3/"
+items="${items} /home/ron/.local/bin/"
+items="${items} /home/ron/egm/egm1/"
+items="${items} /home/ron/programs"
+items="${items} $("ls" -d /home/ron/egm/egm1/*/)"
+items="${items} $("ls" -d /home/ron/programs/*/)"
+items="${items} /home/ron/.config/nvim/"
+items="${items} /home/ron/Downloads/"
+
+echo "${items}"| tr " " "\n"
